@@ -12,7 +12,11 @@ const {
 
 const app = express();
 
-app.use(cors());
+let corsOptions = {
+    origin: '*'
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.urlencoded({ extended: false }))
 

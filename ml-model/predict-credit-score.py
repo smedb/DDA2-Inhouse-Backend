@@ -51,7 +51,7 @@ pickle.dump(model, pickle_out)
 pickle_out.close()
 
 
-# # Ejemplo de predicción
+# Ejemplo de predicción
 new_data = {
     "immovables": "1-2", # 2, >2
     "monthly_income": "<500", # <1000 - >1000

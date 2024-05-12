@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -25,7 +25,7 @@ preprocessor = ColumnTransformer(
 )
 
 # Crear el modelo de árbol de decisión
-model = DecisionTreeRegressor(random_state=42)
+model = DecisionTreeClassifier(random_state=42)
 
 # Crear el pipeline con preprocesamiento y modelo
 pipeline = Pipeline(

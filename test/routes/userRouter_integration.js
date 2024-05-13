@@ -170,7 +170,7 @@ describe('Integration tests /users GET', () => {
   ];
     mockingoose(userSchema).toReturn(users, 'find');
     return await request(app)
-      .get('/users')
+      .get('/users/unapproved')
       .send()
       .expect(200)
       .then(response => expect(response.body[0].firstName).toMatch('John'))

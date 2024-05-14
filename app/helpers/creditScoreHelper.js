@@ -34,7 +34,7 @@ const predictCreditScore = (userData) => {
         }));
     const normalizedPath = path.join(__dirname, '.');
     const pythonCommand = `python3 ${normalizedPath}/../../ml-model/predict.py '${JSON.stringify(mappedData)}'`;
-    const prediction = parseInt(execSync(pythonCommand).toString().replace('\n',''));
+    const prediction = parseInt(execSync(pythonCommand, { shell: false }).toString().replace('\n',''));
     if( typeof prediction != 'number') {
         // Ver como parsear la db en caso de error
         throw new Error({ message: 'The given data can not be predicted'})

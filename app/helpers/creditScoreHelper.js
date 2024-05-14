@@ -44,5 +44,6 @@ const predictCreditScore = (userData) => {
 
 module.exports = {
     predictCreditScore,
-    mapUserQuestionsToMLModel
+    mapUserQuestionsToMLModel,
+    calculateFraudSituation
 }

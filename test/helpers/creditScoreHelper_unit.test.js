@@ -1,5 +1,5 @@
 const { execSync } = require('child_process');
-const { mapUserQuestionsToMLModel, predictCreditScore } = require('../../app/helpers/creditScoreHelper');
+const { mapUserQuestionsToMLModel, predictCreditScore, calculateFraudSituation } = require('../../app/helpers/creditScoreHelper');
 const { objectToSnakeCase, isBetweenRange } = require('../../app/helpers/utils');
 
 jest.mock('../../app/helpers/utils', () => ({
@@ -65,4 +65,10 @@ describe('CreditScoreHelper tests', () => {
     //   expect(result).toMatchObject({creditScore: 950, fraudSituation: 'TRUSTWORTHY'});
 
     // });
+
+    it('should parse data correctly', async () => {
+      isBetweenRange.mockReturnValue(true);
+      const result = calculateFraudSituation(950);
+      expect(result).toMatch('TRUSTWORTHY');
+    });
 })

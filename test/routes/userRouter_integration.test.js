@@ -2,19 +2,51 @@ const request = require('supertest');
 const mockingoose = require('mockingoose');
 const app = require('../../app');
 const userSchema = require('../../app/models/user');
+// const { create } = require('../../app/controllers/userController');
+const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
 
+  jest.mock('../../app/helpers/creditScoreHelper', () => ({
+    predictCreditScore: jest.fn().mockReturnValue({
+      creditScore: 950,
+      fraudSituation: 'FRAUD',
+    }),
+  }));
 
-userController = jest.mock('../../app/controllers/userController', () => ({
-  create: jest.fn(),
-  getUsers: jest.fn(),
-  getUser: jest.fn(),
-}));
+// jest.mock('../../app/controllers/userController', () => ({
+//   create: jest.fn(),
+//   getUsers: jest.fn(),
+//   getUser: jest.fn(),
+// }));
 
 describe('Integration test /users POST', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-    });
+      jest.resetAllMocks();
+      userSchema.find = jest.fn().mockResolvedValue([
+        {  
+          _id: '507f191e810c19729de860ea',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: 'password123'
+      },
+      {  
+          _id: '507f191e810c19729de860eb',
+          firstName: 'John2',
+          lastName: 'Doe2',
+          email: 'johndoe2@example.com',
+          password: 'password2123'
+      }
+      ]);
+      userSchema.findOne = jest.fn().mockResolvedValue({  
+        _id: '507f191e810c19729de860eb',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123'
+    })
+  });
   
     it("Should fail because email is null", () =>
       request(app)
@@ -333,7 +365,9 @@ describe('Integration test /users POST', () => {
         employmentSituation: 'employee',
         hasTesla: 'yes'
       };
-      mockingoose(userSchema).toReturn(createdUser, 'save');
+      predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
+      const saveMock = jest.fn().mockResolvedValue(createdUser);
+      jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
       return await request(app)
         .post('/users')
         .send(userData)
@@ -358,7 +392,6 @@ describe('Integration tests /users GET', () => {
       password: 'password123'
     },
   ];
-    mockingoose(userSchema).toReturn(users, 'find');
     return await request(app)
       .get('/users')
       .send()
@@ -373,7 +406,6 @@ describe('Integration tests /users GET', () => {
       email: 'johndoe@example.com',
       password: 'password123'
     };
-    mockingoose(userSchema).toReturn(user, 'findOne');
     return await request(app)
       .get('/users/1')
       .send()

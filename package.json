@@ -5,8 +5,7 @@
   "main": "app",
   "scripts": {
     "dev": "nodemon ./server.js",
-    "test": "jest --runInBand --forceExit",
-    "coverage": "jest --runInBand --forceExit --coverage"
+    "test": "jest test/app --coverage --runInBand --forceExit"
   },
   "repository": {
     "type": "git",
@@ -33,6 +32,16 @@
     "winston-daily-rotate-file": "^4.4.2"
   },
   "devDependencies": {
+    "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^2.0.4"
+  },
+  "jest": {
+    "testResultsProcessor": "jest-sonar-reporter"
+  },
+  "jestSonar": {
+    "sonar56x": true,
+    "reportPath": "coverage",
+    "reportFile": "test-report.xml",
+    "indent": 4
   }
 }

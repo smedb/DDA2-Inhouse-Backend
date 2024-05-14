@@ -4,9 +4,7 @@ const routes = require('./app/routes/index');
 const cors = require("cors");
 require('dotenv').config();
 
-const {
-    DB_URL,
-} = process.env;
+const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/mydatabase';
 
 const mongoose = require('mongoose');
 

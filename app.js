@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
-mongoose.connect(DB_URL).then(() => console.log("Connected to mongo DB")) // TODO: Unncomment once having Mongo up and credentials added to env file
+mongoose.connect(DB_URL).then(() => console.log("Connected to mongo DB"))
 
 routes.init(app);
 

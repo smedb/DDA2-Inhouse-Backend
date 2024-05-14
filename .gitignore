@@ -4,3 +4,5 @@ app/logger/logs
 app/logger/logs/*
 .DS_Store
 app/.DS_Store
+coverage
+package-lock.json

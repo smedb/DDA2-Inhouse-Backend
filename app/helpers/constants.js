@@ -1,19 +1,24 @@
+const VALID_IMMOVABLES_OPTIONS = ["0", "1-2", ">2"];
+const VALID_MONTHLY_INCOME_OPTIONS = ["<500", "<1000", ">1000"];
+const VALID_EMPLOYMENT_SITUATION_OPTIONS = ["employee", "self-employed", "unemployed"];
+const VALID_HAS_TESLA_OPTIONS = ["no", "yes"];
+
 const ML_MODEL_VARIABLES = [
     {
         key: "immovables",
-        options: ["0", "1-2", ">2"]
+        options: VALID_IMMOVABLES_OPTIONS
     },
     {
         key: "monthly_income",
-        options: ["<500", "<1000", ">1000"]
+        options: VALID_MONTHLY_INCOME_OPTIONS
     },
     {
         key: "employment_situation",
-        options: ["employee", "self-employed", "unemployed"]
+        options: VALID_EMPLOYMENT_SITUATION_OPTIONS
     },
     {
         key: "has_tesla",
-        options: ["no", "yes"]
+        options: VALID_HAS_TESLA_OPTIONS
     }
 ];
 
@@ -47,6 +52,13 @@ const APPROVED_STATUS = [
     APPROVED_STATUS_PENDING
 ];
 
+const CREDIT_SCORE_RANGES = {
+    '0-450': CREDIT_SCORE_VALIDATION_FRAUD,
+    '451-700': CREDIT_SCORE_VALIDATION_PENDING_RISKY,
+    '701-900': CREDIT_SCORE_VALIDATION_PENDING_RELIABLE,
+    '901-': CREDIT_SCORE_VALIDATION_TRUSTWORTHY
+}
+
 module.exports = { 
     ML_MODEL_VARIABLES,  
     BIOMETRIC_VALIDATION, 
@@ -55,5 +67,10 @@ module.exports = {
     BIOMETRIC_VALIDATION_PENDING,
     BIOMETRIC_VALIDATION_INVALID,
     APPROVED_STATUS,
-    APPROVED_STATUS_PENDING
+    APPROVED_STATUS_PENDING,
+    CREDIT_SCORE_RANGES,
+    VALID_IMMOVABLES_OPTIONS,
+    VALID_MONTHLY_INCOME_OPTIONS,
+    VALID_EMPLOYMENT_SITUATION_OPTIONS,
+    VALID_HAS_TESLA_OPTIONS
 };

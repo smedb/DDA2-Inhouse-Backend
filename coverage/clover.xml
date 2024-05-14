@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1715652380682" clover="3.2.0">
+  <project timestamp="1715652380682" name="All files">
+    <metrics statements="124" coveredstatements="123" conditionals="14" coveredconditionals="12" methods="24" coveredmethods="24" elements="162" coveredelements="159" complexity="0" loc="124" ncloc="124" packages="6" files="11" classes="11"/>
+    <package name="DDA2-Inhouse-Backend">
+      <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <file name="app.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app.js">
+        <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="DDA2-Inhouse-Backend.app.controllers">
+      <metrics statements="19" coveredstatements="19" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
+      <file name="userController.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/controllers/userController.js">
+        <metrics statements="19" coveredstatements="19" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="3" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="23" count="3" type="stmt"/>
+        <line num="24" count="3" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="30" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="DDA2-Inhouse-Backend.app.helpers">
+      <metrics statements="55" coveredstatements="54" conditionals="10" coveredconditionals="9" methods="11" coveredmethods="11"/>
+      <file name="constants.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/helpers/constants.js">
+        <metrics statements="20" coveredstatements="20" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="25" count="4" type="stmt"/>
+        <line num="26" count="4" type="stmt"/>
+        <line num="27" count="4" type="stmt"/>
+        <line num="28" count="4" type="stmt"/>
+        <line num="29" count="4" type="stmt"/>
+        <line num="30" count="4" type="stmt"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="32" count="4" type="stmt"/>
+        <line num="33" count="4" type="stmt"/>
+        <line num="34" count="4" type="stmt"/>
+        <line num="36" count="4" type="stmt"/>
+        <line num="42" count="4" type="stmt"/>
+        <line num="49" count="4" type="stmt"/>
+        <line num="55" count="4" type="stmt"/>
+        <line num="62" count="4" type="stmt"/>
+      </file>
+      <file name="creditScoreHelper.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/helpers/creditScoreHelper.js">
+        <metrics statements="25" coveredstatements="24" conditionals="6" coveredconditionals="5" methods="6" coveredmethods="6"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="12" type="stmt"/>
+        <line num="10" count="33" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="19" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="5" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+        <line num="38" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+      </file>
+      <file name="utils.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/helpers/utils.js">
+        <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="5"/>
+        <line num="1" count="9" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="8" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="9" type="stmt"/>
+        <line num="13" count="9" type="cond" truecount="4" falsecount="0"/>
+        <line num="16" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="DDA2-Inhouse-Backend.app.middlewares">
+      <metrics statements="13" coveredstatements="13" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+      <file name="userValidations.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/middlewares/userValidations.js">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+      </file>
+      <file name="validations.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/middlewares/validations.js">
+        <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="10" type="stmt"/>
+        <line num="6" count="10" type="stmt"/>
+        <line num="7" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="9" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="14" count="9" type="stmt"/>
+        <line num="15" count="9" type="stmt"/>
+      </file>
+    </package>
+    <package name="DDA2-Inhouse-Backend.app.models">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="user.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/models/user.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="DDA2-Inhouse-Backend.app.routes">
+      <metrics statements="18" coveredstatements="18" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="healthCheckRouter.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/routes/healthCheckRouter.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+      </file>
+      <file name="index.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/routes/index.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+      </file>
+      <file name="userRouter.js" path="/Users/andreaceltich/Documents/DEV/Inhouse/DDA2-Inhouse-Backend/app/routes/userRouter.js">
+        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

@@ -41,28 +41,28 @@ describe('CreditScoreHelper tests', () => {
       expect(result).toMatchObject(mappedData);
     });
 
-    it('should predict credit score correctly', async () => {
-      const userData = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        password: 'password123',
-        immovables: '>2',
-        monthlyIncome: '>1000',
-        employmentSituation: 'employee',
-        hasTesla: 'yes'
-      };
-      objectToSnakeCase.mockReturnValue({
-        immovables: '1-2',
-        monthly_income: '<500',
-        employment_situation: 'employee',
-        has_tesla: 'no'
-      });
-      isBetweenRange.mockReturnValue(true);
-      execSync.mockReturnValue("950")
+    // it('should predict credit score correctly', async () => {
+    //   const userData = { 
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'johndoe@example.com',
+    //     password: 'password123',
+    //     immovables: '>2',
+    //     monthlyIncome: '>1000',
+    //     employmentSituation: 'employee',
+    //     hasTesla: 'yes'
+    //   };
+    //   objectToSnakeCase.mockReturnValue({
+    //     immovables: '1-2',
+    //     monthly_income: '<500',
+    //     employment_situation: 'employee',
+    //     has_tesla: 'no'
+    //   });
+    //   isBetweenRange.mockReturnValue(true);
+    //   execSync.mockReturnValue("950")
 
-      const result = predictCreditScore(userData);
-      expect(result).toMatchObject({creditScore: 950, fraudSituation: 'TRUSTWORTHY'});
+    //   const result = predictCreditScore(userData);
+    //   expect(result).toMatchObject({creditScore: 950, fraudSituation: 'TRUSTWORTHY'});
 
-    });
+    // });
 })

@@ -161,6 +161,33 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('password field is not a string.'))
     );
 
+    it("Should fail because picture is null", () =>
+      request(app)
+        .post('/users')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: "12313",
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('picture field is empty.'))
+    );
+
+    it("Should fail because picture is not a string", () =>
+      request(app)
+        .post('/users')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: "12313",
+          picture: 12313
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('picture field is not a string.'))
+    );
+
     it("Should fail because immovables is empty", () =>
       request(app)
         .post('/users')
@@ -168,7 +195,8 @@ describe('Integration test /users POST', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'johndoe@example.com',
-          password: "12313"
+          password: "12313",
+          picture: 'picture'
         })
         .expect(400)
         .then(response => expect(response.body.message).toMatch('immovables field is empty.'))
@@ -182,6 +210,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: 1
         })
         .expect(400)
@@ -196,6 +225,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '0-2'
         })
         .expect(400)
@@ -210,6 +240,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2'
         })
         .expect(400)
@@ -224,6 +255,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: 123132
         })
@@ -239,6 +271,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>500'
         })
@@ -255,6 +288,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000'
         })
@@ -270,6 +304,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 1
@@ -286,6 +321,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employed'
@@ -302,6 +338,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee'
@@ -318,6 +355,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -335,6 +373,7 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
+          picture: 'picture',
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -350,6 +389,7 @@ describe('Integration test /users POST', () => {
         lastName: 'Doe',
         email: 'johndoe@example.com',
         password: 'password123',
+        picture: 'picture',
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
@@ -360,6 +400,7 @@ describe('Integration test /users POST', () => {
         lastName: 'Doe',
         email: 'johndoe@example.com',
         password: 'password123',
+        picture: 'picture',
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
@@ -378,38 +419,19 @@ describe('Integration test /users POST', () => {
 
 describe('Integration tests /users GET', () => {
 
-  it("Should success retrieving users", async () => {
-    const users = [{  
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'johndoe@example.com',
-      password: 'password123'
-    },
-    {  
-      firstName: 'Maria',
-      lastName: 'Doe',
-      email: 'mariadoe@example.com',
-      password: 'password123'
-    },
-  ];
-    return await request(app)
-      .get('/users')
-      .send()
-      .expect(200)
-      .then(response => expect(response.body[0].firstName).toMatch('John'))
-  });
+  it("Should success retrieving users", async () => 
+    request(app)
+        .get('/users')
+        .send()
+        .expect(200)
+        .then(response => expect(response.body[0].firstName).toMatch('John'))
+    );
 
-  it("Should success searching one user", async () => {
-    const user = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'johndoe@example.com',
-      password: 'password123'
-    };
-    return await request(app)
+  it("Should success searching one user", async () =>
+    request(app)
       .get('/users/1')
       .send()
       .expect(200)
       .then(response => expect(response.body.firstName).toMatch('John'))
-  });
+  );
 })

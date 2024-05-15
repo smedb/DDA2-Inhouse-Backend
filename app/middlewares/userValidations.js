@@ -33,6 +33,12 @@ exports.bodyPostUserIsComplete = [
       .isString()
       .withMessage('password field is not a string.'),
 
+    check('picture')
+      .exists()
+      .withMessage('picture field is empty.')
+      .isString()
+      .withMessage('picture field is not a string.'),
+
     check('immovables')
       .exists()
       .withMessage('immovables field is empty.')

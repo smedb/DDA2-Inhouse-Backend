@@ -32,6 +32,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    picture: {
+        type: String,
+        required: true // BASE64 string
+    },
     immovables: {
         type: String,
         enum: VALID_IMMOVABLES_OPTIONS,

@@ -1,5 +1,4 @@
-const { execSync } = require('child_process');
-const path = require('path');
+const { predictMLCreditScore } = require('../services/predictCreditScore');
 const { ML_MODEL_VARIABLES, CREDIT_SCORE_RANGES } = require('./constants');
 const { objectToSnakeCase, isBetweenRange } = require('./utils');
 
@@ -32,9 +31,7 @@ const predictCreditScore = (userData) => {
             employmentSituation,
             hasTesla
         }));
-    const normalizedPath = path.join(__dirname, '.');
-    const pythonCommand = `python3 ${normalizedPath}/../../ml-model/predict.py '${JSON.stringify(mappedData)}'`;
-    const prediction = parseInt(execSync(pythonCommand, { shell: false }).toString().replace('\n',''));
+    const prediction = predictMLCreditScore(mappedData);
     if( typeof prediction != 'number') {
         // Ver como parsear la db en caso de error
         throw new Error({ message: 'The given data can not be predicted'})

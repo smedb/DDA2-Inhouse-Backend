@@ -1,0 +1,399 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "DDA2 - Inhouse",
+      "version": "1.0.0",
+      "description": "API DDA2 Inhouse - Grupo 1"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local server"
+      }
+    ],
+    "tags": [
+        {
+          "name": "Users",
+          "description": "Operations related to users"
+        }
+    ],
+    "paths": {
+        "/users/unapproved": {
+          "get": {
+            "summary": "Get all unapproved users",
+            "description": "Return a list of all unapproved and non fraud users",
+            "tags": ["Users"],
+            "responses": {
+              "200": {
+                "description": "List of unnaproved and non fraud users",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "password": {
+                            "type": "string"
+                          },
+                          "picture": {
+                            "type": "string"
+                          },
+                          "immovables": {
+                            "type": "string",
+                            "enum": ["0", "1-2", ">2"]
+                          },
+                          "monthlyIncome": {
+                            "type": "string",
+                            "enum": ["<500", "<1000", ">1000"]
+                          },
+                          "employmentSituation": {
+                            "type": "string",
+                            "enum": ["employee", "self-employed", "unemployed"]
+                          },
+                          "hasTesla": {
+                            "type": "string",
+                            "enum": ["yes", "no"]
+                          },
+                          "verified": {
+                            "type": "string",
+                            "enum": ["PENDING", "VERIFIED", "INVALID"]
+                          },
+                          "approved": {
+                            "type": "string",
+                            "enum": ["PENDING", "APPROVED", "REJECTED"]
+                          },
+                          "creditScore": {
+                            "type": "number"
+                          },
+                          "fraudSituation": {
+                            "type": "string",
+                            "enum": ["PENDING_RISKY", "PENDING_RELIABLE", "FRAUD", "TRUSTWORTHY"]
+                          },
+                          "__v": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "_id": "6644314177479c1546b55114",
+                        "firstName": "user1",
+                        "lastName": "perez",
+                        "email": "user.prueba18@cmail.com",
+                        "password": "asdasd",
+                        "picture": "sadfasdf",
+                        "immovables": "0",
+                        "monthlyIncome": ">1000",
+                        "employmentSituation": "employee",
+                        "hasTesla": "yes",
+                        "verified": "VERIFIED",
+                        "approved": "PENDING",
+                        "creditScore": 700,
+                        "fraudSituation": "PENDING_RISKY",
+                        "__v": 0
+                      },
+                      {
+                        "_id": "66443b6cf420f376375ed189",
+                        "firstName": "user1",
+                        "lastName": "perez",
+                        "email": "user.prueba21@cmail.com",
+                        "password": "asdasd",
+                        "picture": "asdfasdfds",
+                        "immovables": "0",
+                        "monthlyIncome": ">1000",
+                        "employmentSituation": "employee",
+                        "hasTesla": "yes",
+                        "verified": "PENDING",
+                        "approved": "PENDING",
+                        "creditScore": 700,
+                        "fraudSituation": "TRUSTWORTHY",
+                        "__v": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/users": {
+            "post": {
+              "summary": "Create a new user",
+              "description": "Will create an user and calculate the credit score and verify biometry by params",
+              "tags": ["Users"],
+              "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                      "schema": {
+                            "type": "object",
+                            "properties": {
+                                "firstName": {
+                                    "type": "string"
+                                  },
+                                  "lastName": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "password": {
+                                    "type": "string"
+                                  },
+                                  "picture": {
+                                    "type": "string"
+                                  },
+                                  "immovables": {
+                                    "type": "string",
+                                    "enum": ["0", "1-2", ">2"]
+                                  },
+                                  "monthlyIncome": {
+                                    "type": "string",
+                                    "enum": ["<500", "<1000", ">1000"]
+                                  },
+                                  "employmentSituation": {
+                                    "type": "string",
+                                    "enum": ["employee", "self-employed", "unemployed"]
+                                  },
+                                  "hasTesla": {
+                                    "type": "string",
+                                    "enum": ["yes", "no"]
+                                  }
+                            },
+                            "example": {
+                                "email": "user.prueba21@cmail.com",
+                                "firstName": "uer1",
+                                "lastName": "perez",
+                                "password": "asdasd",
+                                "immovables": "0",
+                                "monthlyIncome": ">1000",
+                                "employmentSituation": "employee",
+                                "hasTesla": "yes",
+                                "picture": "dasdfadsf"
+                              }
+                        }
+                    }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Return the created user",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                              "type": "string"
+                            },
+                            "firstName": {
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "password": {
+                              "type": "string"
+                            },
+                            "picture": {
+                              "type": "string"
+                            },
+                            "immovables": {
+                              "type": "string",
+                              "enum": ["0", "1-2", ">2"]
+                            },
+                            "monthlyIncome": {
+                              "type": "string",
+                              "enum": ["<500", "<1000", ">1000"]
+                            },
+                            "employmentSituation": {
+                              "type": "string",
+                              "enum": ["employee", "self-employed", "unemployed"]
+                            },
+                            "hasTesla": {
+                              "type": "string",
+                              "enum": ["yes", "no"]
+                            },
+                            "verified": {
+                              "type": "string",
+                              "enum": ["PENDING", "VERIFIED", "INVALID"]
+                            },
+                            "approved": {
+                              "type": "string",
+                              "enum": ["PENDING", "APPROVED", "REJECTED"]
+                            },
+                            "creditScore": {
+                              "type": "number"
+                            },
+                            "fraudSituation": {
+                              "type": "string",
+                              "enum": ["PENDING_RISKY", "PENDING_RELIABLE", "FRAUD", "TRUSTWORTHY"]
+                            },
+                            "__v": {
+                              "type": "number"
+                            }
+                        }
+                      },
+                      "example": {
+                        "_id": "66443b6cf420f376375ed189",
+                        "firstName": "user1",
+                        "lastName": "perez",
+                        "email": "user.prueba21@cmail.com",
+                        "password": "asdasd",
+                        "picture": "asdfasdfds",
+                        "immovables": "0",
+                        "monthlyIncome": ">1000",
+                        "employmentSituation": "employee",
+                        "hasTesla": "yes",
+                        "verified": "PENDING",
+                        "approved": "PENDING",
+                        "creditScore": 950,
+                        "fraudSituation": "TRUSTWORTHY",
+                        "__v": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+        "/users/{userId}": {
+            "put": {
+                "summary": "Update a new user to approve or reject",
+                "description": "Will update an user depending on param",
+                "tags": [ "Users" ],
+                "parameters": [
+                    {
+                      "name": "userId",
+                      "in": "path",
+                      "description": "User ID to update",
+                      "required": true,
+                      "schema": {
+                        "type": "string"
+                      },
+                      "example": "6644314177479c1546b55114"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "approved": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "example": {
+                                    "approved": true
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return the updated user",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                            "type": "object",
+                            "properties": {
+                                "_id": {
+                                    "type": "string"
+                                },
+                                "firstName": {
+                                    "type": "string"
+                                },
+                                "lastName": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "picture": {
+                                    "type": "string"
+                                },
+                                "immovables": {
+                                    "type": "string",
+                                    "enum": ["0", "1-2", ">2"]
+                                },
+                                "monthlyIncome": {
+                                    "type": "string",
+                                    "enum": ["<500", "<1000", ">1000"]
+                                },
+                                "employmentSituation": {
+                                    "type": "string",
+                                    "enum": ["employee", "self-employed", "unemployed"]
+                                },
+                                "hasTesla": {
+                                    "type": "string",
+                                    "enum": ["yes", "no"]
+                                },
+                                "verified": {
+                                    "type": "string",
+                                    "enum": ["PENDING", "VERIFIED", "INVALID"]
+                                },
+                                "approved": {
+                                    "type": "string",
+                                    "enum": ["PENDING", "APPROVED", "REJECTED"]
+                                },
+                                "creditScore": {
+                                    "type": "number"
+                                },
+                                "fraudSituation": {
+                                    "type": "string",
+                                    "enum": ["PENDING_RISKY", "PENDING_RELIABLE", "FRAUD", "TRUSTWORTHY"]
+                                },
+                                "__v": {
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "example": {
+                            "_id": "66443b6cf420f376375ed189",
+                            "firstName": "user1",
+                            "lastName": "perez",
+                            "email": "user.prueba21@cmail.com",
+                            "password": "asdasd",
+                            "picture": "asdfasdfds",
+                            "immovables": "0",
+                            "monthlyIncome": ">1000",
+                            "employmentSituation": "employee",
+                            "hasTesla": "yes",
+                            "verified": "PENDING",
+                            "approved": "APPROVED",
+                            "creditScore": 950,
+                            "fraudSituation": "TRUSTWORTHY",
+                            "__v": 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+  

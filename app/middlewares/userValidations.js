@@ -70,6 +70,12 @@ exports.bodyPostUserIsComplete = [
       .withMessage('hasTesla field is not a string.')
       .isIn(VALID_HAS_TESLA_OPTIONS)
       .withMessage(`hasTesla should be one of these values: ${VALID_HAS_TESLA_OPTIONS.join(', ')}`)
-
-      // add picture and remaining parameters, info from the questions like salary/job etc - also in the schema
   ];
+
+exports.bodyPutUserIsComplete = [
+    check('approved')
+      .exists()
+      .withMessage('approved field is empty.')
+      .isBoolean()
+      .withMessage('approved field is not a boolean.'),
+]

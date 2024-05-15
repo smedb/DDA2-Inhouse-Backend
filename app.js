@@ -4,11 +4,9 @@ const routes = require('./app/routes/index');
 const cors = require("cors");
 require('dotenv').config();
 
-const {
-    DB_URL,
-} = process.env;
+const DB_URL = process.env.NODE_ENV != 'test' ? process.env.DB_URL : 'mongodb://localhost:27017/mydatabase';
 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -22,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
-// mongoose.connect(DB_URL).then(() => console.log("Connected to mongo DB")) // TODO: Unncomment once having Mongo up and credentials added to env file
+mongoose.connect(DB_URL).then(() => console.log("Connected to mongo DB"))
 
 routes.init(app);
 

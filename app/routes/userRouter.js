@@ -11,7 +11,7 @@ const routes = Router();
 
 routes.post("/users", bodyPostUserIsComplete, validate.validations, userController.create);
 
-routes.get("/users", userController.getUsers);
+routes.get("/users/unapproved", userController.getUsers);
 
 routes.get("/users/:userId", userController.getUser);
 

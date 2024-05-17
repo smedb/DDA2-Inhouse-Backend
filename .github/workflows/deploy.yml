@@ -1,8 +1,8 @@
-name: CI
+name: AWS Deploy (CD)
 
 on:
     workflow_run:
-        workflows: ["Build"]
+        workflows: ["Build and Test (CI)"]
         types:
           - completed
     
@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run: npm install
       - run: npm ci
       - run: npm run test
 

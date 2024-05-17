@@ -30,6 +30,6 @@ jobs:
           switches: -avzr --delete --exclude '.env'
           path: ./*
           remote_path: /var/www/backend/
-          remote_host: inhouse.deliver.ar
+          remote_host: api.inhouse.deliver.ar
           remote_user: ubuntu
           remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"

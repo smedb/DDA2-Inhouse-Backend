@@ -1,0 +1,34 @@
+name: CI
+
+on:
+    workflow_run:
+        workflows: ["Build"]
+        types:
+          - completed
+    
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: npm ci
+      - run: npm run test
+
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete --exclude '.env'
+          path: ./*
+          remote_path: /var/www/backend/
+          remote_host: inhouse.deliver.ar
+          remote_user: ubuntu
+          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"

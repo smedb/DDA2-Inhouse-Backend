@@ -39,7 +39,8 @@ describe('User Controller', () => {
   })
   });
 
-  it('should create a new user', async () => {
+  describe('Create user', () => {
+    it('should create a new user', async () => {
     const userData = { 
         firstName: 'John',
         lastName: 'Doe',
@@ -100,8 +101,10 @@ describe('User Controller', () => {
     expect(res.status).toHaveBeenCalledWith(500);
   });
 
-
-  it('should get all users', async () => {
+  })
+  
+  describe('Get all unapproved users', () => {
+      it('should get all users', async () => {
     const users = [
         {  
             _id: '507f191e810c19729de860ea',
@@ -141,8 +144,11 @@ describe('User Controller', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
   });
+  })
 
-  it('should get a user by ID', async () => {
+
+  describe('Get user by id', () => {
+     it('should get a user by ID', async () => {
     const req = { params: { userId: '507f191e810c19729de860eb' } };
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -166,5 +172,94 @@ describe('User Controller', () => {
     await userController.getUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-  });
+  }); 
+  })
+
+  describe('Approve and update user', () => {
+    it('should approve an user', async () => {
+      jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue({ 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123',
+        immovables: '>2',
+        monthlyIncome: '>1000',
+        employmentSituation: 'employee',
+        hasTesla: 'yes',
+        creditScore: 950,
+        fraudSituation: 'FRAUD',
+        approved: 'APPROVED'
+    });
+      const req = {
+        params: { userId: '507f191e810c19729de860ea' },
+        body: { approve: true }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
+  
+      await userController.updateUser(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    it('should reject an user', async () => {
+      jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue({ 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123',
+        immovables: '>2',
+        monthlyIncome: '>1000',
+        employmentSituation: 'employee',
+        hasTesla: 'yes',
+        creditScore: 950,
+        fraudSituation: 'FRAUD',
+        approved: 'REJECTED'
+    });
+      const req = {
+        params: { userId: '507f191e810c19729de860ea' },
+        body: { approve: false }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
+  
+      await userController.updateUser(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+  
+    it('should handle get users error and return 404', async () => {
+      jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue(null);
+      const req = {
+        params: { userId: '507f191e810c19729de860ea' },
+        body: { approve: false }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
+  
+      await userController.updateUser(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('should handle get users error and return 500', async () => {
+      jest.spyOn(userSchema, 'findOneAndUpdate').mockRejectedValue({message: "error"});
+      const req = {
+        params: { userId: '507f191e810c19729de860ea' },
+        body: { approve: false }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
+  
+      await userController.updateUser(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+    });
+  })
 });

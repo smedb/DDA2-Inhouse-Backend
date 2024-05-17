@@ -1,8 +1,8 @@
-name: CI
+name: AWS Deploy (CD)
 
 on:
     workflow_run:
-        workflows: ["Build"]
+        workflows: ["Build and Test (CI)"]
         types:
           - completed
     
@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run: npm install
       - run: npm ci
       - run: npm run test
 
@@ -29,6 +30,6 @@ jobs:
           switches: -avzr --delete --exclude '.env'
           path: ./*
           remote_path: /var/www/backend/
-          remote_host: inhouse.deliver.ar
+          remote_host: api.inhouse.deliver.ar
           remote_user: ubuntu
           remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"

@@ -1,8 +1,6 @@
 const request = require('supertest');
-const mockingoose = require('mockingoose');
 const app = require('../../app');
 const userSchema = require('../../app/models/user');
-// const { create } = require('../../app/controllers/userController');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
 
   jest.mock('../../app/helpers/creditScoreHelper', () => ({
@@ -11,12 +9,6 @@ const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
       fraudSituation: 'FRAUD',
     }),
   }));
-
-// jest.mock('../../app/controllers/userController', () => ({
-//   create: jest.fn(),
-//   getUsers: jest.fn(),
-//   getUser: jest.fn(),
-// }));
 
 describe('Integration test /users POST', () => {
 
@@ -45,8 +37,18 @@ describe('Integration test /users POST', () => {
         lastName: 'Doe',
         email: 'johndoe@example.com',
         password: 'password123'
-    })
+      });
+      userSchema.findOneAndUpdate = jest.fn().mockResolvedValue({
+        _id: '507f191e810c19729de860eb',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123',
+        approved: 'APPROVED'
+      })
   });
+
+  describe('Validations', () => {
   
     it("Should fail because email is null", () =>
       request(app)
@@ -383,6 +385,8 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('hasTesla should be one of these values: no, yes'))
     );
 
+        
+  })
     it("Should success creating a user", async () => {
       const userData = {  
         firstName: 'John',
@@ -434,4 +438,50 @@ describe('Integration tests /users GET', () => {
       .expect(200)
       .then(response => expect(response.body.firstName).toMatch('John'))
   );
+})
+
+describe('Integration tests /users PUT', () => {
+  it("Should fail because approved is empty", () =>
+    request(app)
+      .put('/users/11111')
+      .send({})
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('approved field is empty.'))
+  );
+  it("Should fail because approved has not a valid type", () =>
+    request(app)
+      .put('/users/11111')
+      .send({
+        approved: 'aasdas'
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('approved field is not a boolean.'))
+  );
+
+  it("Should success updating an user", async () =>  {
+    jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue(null);
+    return await request(app)
+        .put('/users/11111')
+        .send({
+          approved: true
+        })
+        .expect(404)
+        .then(response => expect(response.body.message).toMatch('User not found'));
+  });
+
+  it("Should success updating an user", async () =>  {
+    const updateMock = jest.fn().mockResolvedValue({_id: '507f191e810c19729de860ea',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: 'password123'});
+    jest.spyOn(userSchema, 'findOneAndUpdate').mockImplementation(updateMock);
+    return await request(app)
+        .put('/users/11111')
+        .send({
+          approved: true
+        })
+        .expect(200)
+        .then(response => expect(response.body.firstName).toMatch('John'));
+  });
 })

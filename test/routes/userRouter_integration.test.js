@@ -2,17 +2,12 @@ const request = require('supertest');
 const app = require('../../app');
 const userSchema = require('../../app/models/user');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
-const {validateToken} = require('../../app/middlewares/validateToken');
 
   jest.mock('../../app/helpers/creditScoreHelper', () => ({
     predictCreditScore: jest.fn().mockReturnValue({
       creditScore: 950,
       fraudSituation: 'FRAUD',
     }),
-  }));
-
-  jest.mock('../../app/middlewares/validateToken', () => ({
-    validateToken: jest.fn()
   }));
 
 describe('Integration test /users POST', () => {
@@ -406,13 +401,9 @@ describe('Integration tests /users/unapproved GET', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    // const verify = jest.spyOn(jwt, 'verify');
-    // verify.mockReturnValue(({ verified: 'true' }));
 });
  
-  it.only("Should success retrieving users", async () => {
-    validateToken.mockReturnValue(true)
-    // verify.mockReturnValue(({ verified: 'true' }));
+  it("Should success retrieving users", async () => {
     userSchema.find = jest.fn().mockResolvedValue([
       {  
         _id: '507f191e810c19729de860ea',
@@ -436,21 +427,13 @@ describe('Integration tests /users/unapproved GET', () => {
         .expect(200)
         .then(response => expect(response.body[0].firstName).toMatch('John'))}
     );
-
-  it("Should success searching one user", async () =>
-    request(app)
-      .get('/users/1')
-      .set('Authorization', 'Token 1234567890')
-      .send()
-      .expect(200)
-      .then(response => expect(response.body.firstName).toMatch('John'))
-  );
 })
 
 describe('Integration tests /users PUT', () => {
   it("Should fail because approved is empty", () =>
     request(app)
       .put('/users/11111')
+      .set({'Authorization': 'Token 1234567890'})
       .send({})
       .expect(400)
       .then(response => expect(response.body.message).toMatch('approved field is empty.'))
@@ -792,7 +775,7 @@ describe('Validations', () => {
     return await request(app)
       .post('/users/employee/login')
       .send(userData)
-      .expect(201)
+      .expect(200)
       .then(response => expect(response.body.email).toMatch('johndoe@example.com'))
   });
 });

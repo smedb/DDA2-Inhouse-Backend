@@ -103,66 +103,49 @@ describe('User Controller', () => {
   })
   
   describe('Get all unapproved users', () => {
-      it('should get all users', async () => {
-    const users = [
-        {  
-            _id: '507f191e810c19729de860ea',
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'johndoe@example.com',
-            password: 'password123'
-        },
-        {  
-            _id: '507f191e810c19729de860eb',
-            firstName: 'John2',
-            lastName: 'Doe2',
-            email: 'johndoe2@example.com',
-            password: 'password2123'
-        }
-    ];
+    it('should get all users', async () => {
+      const req = {};
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-    const req = {};
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
+      await userController.getUsers(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
 
-    await userController.getUsers(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
-  });
+    it('should handle get users error and return 500', async () => {
+      userSchema.find = jest.fn().mockImplementationOnce(() => Promise.reject({message: "error"}))
+      const req = {};
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-  it('should handle get users error and return 500', async () => {
-    userSchema.find = jest.fn().mockImplementationOnce(() => Promise.reject({message: "error"}))
-    const req = {};
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
+      await userController.getUsers(req, res);
 
-    await userController.getUsers(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-  });
+      expect(res.status).toHaveBeenCalledWith(500);
+    });
   })
 
 
   describe('Login employee', () => {
-     it('should login a user by email', async () => {
-    const req = { email: 'johndoe@cmail.com', password: 'pass' };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
+    it('should login a user by email', async () => {
+      const req = { body: { email: 'johndoe@cmail.com', password: 'pass' } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-    await userController.loginEmployee(req, res);
+      await userController.loginEmployee(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(200);
-  });
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
 
   it('should handle login employee error and return 500', async () => {
     userSchema.findOne = jest.fn().mockImplementationOnce(() => Promise.reject({message: "error"}))
 
-    const req = { email: 'johndoe@cmail.com', password: 'pass' };
+    const req = { body: { email: 'johndoe@cmail.com', password: 'pass' } };
     const res = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),

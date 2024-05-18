@@ -1,5 +1,4 @@
 const { check } = require('express-validator');
-const jwt = require('jsonwebtoken');
 const {
   VALID_IMMOVABLES_OPTIONS,
   VALID_MONTHLY_INCOME_OPTIONS,

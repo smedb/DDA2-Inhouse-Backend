@@ -25,7 +25,7 @@ preprocessor = ColumnTransformer(
 )
 
 # Crear el modelo de árbol de decisión
-model = DecisionTreeClassifier(random_state=42)
+model = DecisionTreeClassifier(random_state=42, criterion= 'entropy')
 
 # Crear el pipeline con preprocesamiento y modelo
 pipeline = Pipeline(
@@ -45,11 +45,7 @@ pipeline.fit(X_train, y_train)
 score = pipeline.score(X_test, y_test)
 print(f"Model R² score: {score}")
 
-import pickle
-pickle_out = open("./modelo_decision_tree.pkl", mode = "wb") 
-pickle.dump(model, pickle_out) 
-pickle_out.close()
-
+joblib.dump(pipeline, './modelo_decision_tree.pkl', compress = 1)
 
 # Ejemplo de predicción
 new_data = {

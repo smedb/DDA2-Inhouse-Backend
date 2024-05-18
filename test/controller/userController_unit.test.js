@@ -155,6 +155,21 @@ describe('User Controller', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
   }); 
+
+
+  it('should handle login employee error not found and return 500', async () => {
+    userSchema.findOne = jest.fn().mockResolvedValue(null)
+
+    const req = { body: { email: 'johndoe@cmail.com', password: 'pass' } };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+
+    await userController.loginEmployee(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+  }); 
   })
 
   describe('Approve and update user', () => {

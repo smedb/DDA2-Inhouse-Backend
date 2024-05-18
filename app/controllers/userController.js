@@ -60,7 +60,7 @@ const createEmployee = async (req, res, next) =>
 
 
 const loginEmployee = async (req, res, next) => 
-    userSchema.findOne({ email: req.body.email, segment: USER_SEGMENT_EMPLOYEE })
+    userSchema.findOne({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE })
         .then(data => {
             if(!data) {
                 return res.status(401).json({ message: 'Invalid login credentials.' });

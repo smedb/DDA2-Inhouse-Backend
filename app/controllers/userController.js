@@ -63,14 +63,14 @@ const loginEmployee = async (req, res, next) =>
     userSchema.findOne({ email: req.body.email, segment: USER_SEGMENT_EMPLOYEE })
         .then(data => {
             if(!data) {
-                return res.status(401).json({ error: 'Invalid login credentials.' });
+                return res.status(401).json({ message: 'Invalid login credentials.' });
             }
             const { email, password } = req.body;
             const hashedPassword = data.password;
             return bcrypt.compare(password, hashedPassword)
                 .then(passwordMatch => {
                     if (!passwordMatch && process.env.NODE_ENV != 'test') {
-                        return res.status(401).json({ error: 'Invalid login credentials.' });
+                        return res.status(401).json({ message: 'Invalid login credentials.' });
                     }
                     const token = process.env.NODE_ENV == 'test' ? 
                         'mockToken' : 

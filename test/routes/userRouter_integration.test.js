@@ -402,6 +402,14 @@ describe('Integration tests /users/unapproved GET', () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
 });
+
+  it("Should fail because there is no token present", () =>
+    request(app)
+      .put('/users/unapproved')
+      .send()
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
  
   it("Should success retrieving users", async () => {
     userSchema.find = jest.fn().mockResolvedValue([
@@ -441,6 +449,7 @@ describe('Integration tests /users PUT', () => {
   it("Should fail because approved has not a valid type", () =>
     request(app)
       .put('/users/11111')
+      .set({'Authorization': 'Token 1234567890'})
       .send({
         approved: 'aasdas'
       })
@@ -448,10 +457,21 @@ describe('Integration tests /users PUT', () => {
       .then(response => expect(response.body.message).toMatch('approved field is not a boolean.'))
   );
 
+  it("Should fail because there is no token present", () =>
+    request(app)
+      .put('/users/11111')
+      .send({
+        approved: true
+      })
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
+
   it("Should success updating an user", async () =>  {
     jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue(null);
     return await request(app)
         .put('/users/11111')
+        .set({'Authorization': 'Token 1234567890'})
         .send({
           approved: true
         })
@@ -468,6 +488,7 @@ describe('Integration tests /users PUT', () => {
     jest.spyOn(userSchema, 'findOneAndUpdate').mockImplementation(updateMock);
     return await request(app)
         .put('/users/11111')
+        .set({'Authorization': 'Token 1234567890'})
         .send({
           approved: true
         })

@@ -138,31 +138,6 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('lastName field is not a string.'))
     );
 
-    it("Should fail because password is null", () =>
-      request(app)
-        .post('/users')
-        .send({  
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'johndoe@example.com'
-        })
-        .expect(400)
-        .then(response => expect(response.body.message).toMatch('password field is empty.'))
-    );
-
-    it("Should fail because password is not a string", () =>
-      request(app)
-        .post('/users')
-        .send({  
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'johndoe@example.com',
-          password: 12313
-        })
-        .expect(400)
-        .then(response => expect(response.body.message).toMatch('password field is not a string.'))
-    );
-
     it("Should fail because picture is null", () =>
       request(app)
         .post('/users')
@@ -421,29 +396,52 @@ describe('Integration test /users POST', () => {
     });
 });
 
-describe('Integration tests /users GET', () => {
+describe('Integration tests /users/unapproved GET', () => {
 
-  it("Should success retrieving users", async () => 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+});
+
+  it("Should fail because there is no token present", () =>
     request(app)
+      .put('/users/unapproved')
+      .send()
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
+ 
+  it("Should success retrieving users", async () => {
+    userSchema.find = jest.fn().mockResolvedValue([
+      {  
+        _id: '507f191e810c19729de860ea',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123'
+    },
+    {  
+        _id: '507f191e810c19729de860eb',
+        firstName: 'John2',
+        lastName: 'Doe2',
+        email: 'johndoe2@example.com',
+        password: 'password2123'
+    }
+    ]);
+    return await request(app)
         .get('/users/unapproved')
+        .set({'Authorization': 'Token 1234567890'})
         .send()
         .expect(200)
-        .then(response => expect(response.body[0].firstName).toMatch('John'))
+        .then(response => expect(response.body[0].firstName).toMatch('John'))}
     );
-
-  it("Should success searching one user", async () =>
-    request(app)
-      .get('/users/1')
-      .send()
-      .expect(200)
-      .then(response => expect(response.body.firstName).toMatch('John'))
-  );
 })
 
 describe('Integration tests /users PUT', () => {
   it("Should fail because approved is empty", () =>
     request(app)
       .put('/users/11111')
+      .set({'Authorization': 'Token 1234567890'})
       .send({})
       .expect(400)
       .then(response => expect(response.body.message).toMatch('approved field is empty.'))
@@ -451,6 +449,7 @@ describe('Integration tests /users PUT', () => {
   it("Should fail because approved has not a valid type", () =>
     request(app)
       .put('/users/11111')
+      .set({'Authorization': 'Token 1234567890'})
       .send({
         approved: 'aasdas'
       })
@@ -458,10 +457,21 @@ describe('Integration tests /users PUT', () => {
       .then(response => expect(response.body.message).toMatch('approved field is not a boolean.'))
   );
 
+  it("Should fail because there is no token present", () =>
+    request(app)
+      .put('/users/11111')
+      .send({
+        approved: true
+      })
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
+
   it("Should success updating an user", async () =>  {
     jest.spyOn(userSchema, 'findOneAndUpdate').mockResolvedValue(null);
     return await request(app)
         .put('/users/11111')
+        .set({'Authorization': 'Token 1234567890'})
         .send({
           approved: true
         })
@@ -478,6 +488,7 @@ describe('Integration tests /users PUT', () => {
     jest.spyOn(userSchema, 'findOneAndUpdate').mockImplementation(updateMock);
     return await request(app)
         .put('/users/11111')
+        .set({'Authorization': 'Token 1234567890'})
         .send({
           approved: true
         })
@@ -485,3 +496,307 @@ describe('Integration tests /users PUT', () => {
         .then(response => expect(response.body.firstName).toMatch('John'));
   });
 })
+
+describe('Integration test /users/employee POST', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    userSchema.findOne = jest.fn().mockResolvedValue({  
+      _id: '507f191e810c19729de860eb',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      password: 'password123'
+    });
+});
+
+describe('Validations', () => {
+
+  it("Should fail because users array is not an array", () =>
+    request(app)
+        .post('/users/employee')
+        .send({  
+          users: {
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123'
+          }
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('users field is not an array.'))
+  );
+  it("Should fail because users array is null", () =>
+    request(app)
+        .post('/users/employee')
+        .send({})
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('users field is empty.'))
+  );
+
+  it("Should fail because email is null", () =>
+    request(app)
+        .post('/users/employee')
+        .send({  
+          users: [{
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123'
+          }]
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is empty.'))
+  );
+  
+  it("Should fail because email is not a string", () =>
+    request(app)
+        .post('/users/employee')
+        .send({ 
+          users: [{
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 12123,
+            password: 'password123'
+          }] 
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is not a string.'))
+  );
+
+  it("Should fail because email is not an email", () =>
+    request(app)
+        .post('/users/employee')
+        .send({ 
+          users: [{
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'johndoe',
+            password: 'password123'
+          }] 
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is not an email.'))
+  );
+
+  it("Should fail because firstName is null", () =>
+    request(app)
+        .post('/users/employee')
+        .send({
+          users: [{  
+            lastName: 'Doe',
+            email: 'johndoe@example.com',
+            password: 'password123'
+        }]})
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('firstName field is empty.'))
+  );
+
+  it("Should fail because firstName is not a string", () =>
+    request(app)
+        .post('/users/employee')
+        .send({ 
+          users: [{
+            firstName: 1212,
+            lastName: 'Doe',
+            email: 'johndoe@example.com',
+            password: 'password123'
+        }]})
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('firstName field is not a string.'))
+  );
+
+  it("Should fail because lastName is null", () =>
+    request(app)
+        .post('/users/employee')
+        .send({ 
+          users: [{
+            firstName: 'John',
+            email: 'johndoe@example.com',
+            password: 'password123'
+          }] 
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('lastName field is empty.'))
+  );
+
+  it("Should fail because lastName is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 1212,
+          email: 'johndoe@example.com',
+          password: 'password123'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('lastName field is not a string.'))
+  );
+
+  it("Should fail because password is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('password field is empty.'))
+  );
+
+  it("Should fail because password is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: 12313
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('password field is not a string.'))
+    );
+
+})
+  it("Should success creating a user", async () => {
+    const userData = {
+      users: [{  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123'
+      }]
+    };
+    const createdUser = {  
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      password: 'password123',
+      picture: 'picture',
+      immovables: '>2',
+      monthlyIncome: '>1000',
+      employmentSituation: 'employee',
+      hasTesla: 'yes'
+    };
+    const saveMock = jest.fn().mockResolvedValue(createdUser);
+    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+    return await request(app)
+      .post('/users/employee')
+      .send(userData)
+      .expect(201)
+      .then(response => expect(response.body[0].email).toMatch('johndoe@example.com'))
+  });
+});
+
+
+describe('Integration test /users/employee/login POST', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    userSchema.findOne = jest.fn().mockResolvedValue({  
+      _id: '507f191e810c19729de860eb',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      password: 'password123'
+    });
+});
+
+describe('Validations', () => {
+
+  it("Should fail because email is null", () =>
+    request(app)
+        .post('/users/employee/login')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          password: 'password123'
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is empty.'))
+  );
+  
+  it("Should fail because email is not a string", () =>
+    request(app)
+        .post('/users/employee/login')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 12123,
+          password: 'password123'
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is not a string.'))
+  );
+
+  it("Should fail because email is not an email", () =>
+    request(app)
+        .post('/users/employee/login')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe',
+          password: 'password123'
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('email field is not an email.'))
+  );
+
+  it("Should fail because password is null", () =>
+    request(app)
+      .post('/users/employee/login')
+      .send({  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com'
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('password field is empty.'))
+  );
+
+  it("Should fail because password is not a string", () =>
+    request(app)
+      .post('/users/employee/login')
+      .send({  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 12313
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('password field is not a string.'))
+    );
+
+})
+  it("Should success creating a user", async () => {
+    const userData = { 
+      email: 'johndoe@example.com',
+      password: 'password123'
+    };
+    const createdUser = {  
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      password: 'password123',
+      picture: 'picture',
+      immovables: '>2',
+      monthlyIncome: '>1000',
+      employmentSituation: 'employee',
+      hasTesla: 'yes'
+    };
+    const saveMock = jest.fn().mockResolvedValue(createdUser);
+    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+    return await request(app)
+      .post('/users/employee/login')
+      .send(userData)
+      .expect(200)
+      .then(response => expect(response.body.email).toMatch('johndoe@example.com'))
+  });
+});

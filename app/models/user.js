@@ -8,8 +8,12 @@ const {
     VALID_HAS_TESLA_OPTIONS,
     VALID_EMPLOYMENT_SITUATION_OPTIONS,
     VALID_MONTHLY_INCOME_OPTIONS,
-    VALID_IMMOVABLES_OPTIONS
+    VALID_IMMOVABLES_OPTIONS,
+    USER_SEGMENT,
+    USER_SEGMENT_CLIENT
 } = require('../helpers/constants');
+
+const isRequiredIfClient = () => this.segment == USER_SEGMENT_CLIENT;
 
 const userSchema = mongoose.Schema({
     firstName: {
@@ -28,42 +32,38 @@ const userSchema = mongoose.Schema({
             partialFilterExpression: {email: {$type: "string"}}
         }
     },
-    password: { // TODO: ENCRYPT WITH JWT
-        type: String,
-        required: false
-    },
     picture: {
         type: String,
-        required: true // BASE64 string
+        required: isRequiredIfClient // BASE64 string
     },
     immovables: {
         type: String,
         enum: VALID_IMMOVABLES_OPTIONS,
-        required: true
+        required: isRequiredIfClient
     },
     monthlyIncome: {
         type: String,
         enum: VALID_MONTHLY_INCOME_OPTIONS,
-        required: true
+        required: isRequiredIfClient
     },
     employmentSituation: {
         type: String,
         enum: VALID_EMPLOYMENT_SITUATION_OPTIONS,
-        required: true
+        required: isRequiredIfClient
     },
     hasTesla: {
         type: String,
         enum: VALID_HAS_TESLA_OPTIONS,
-        required: true
+        required: isRequiredIfClient
     },
     fraudSituation: {
         type: String,
         enum: CREDIT_SCORE_VALIDATION,
-        required: true
+        required: isRequiredIfClient
     },
     creditScore: {
         type: Number,
-        required: true
+        required: isRequiredIfClient
     },
     verified: {
         type: String,
@@ -75,7 +75,15 @@ const userSchema = mongoose.Schema({
         enum: APPROVED_STATUS,
         default: APPROVED_STATUS_PENDING
     },
-    // TODO: ADD remaining properties such as picture, job, salary, etc
+    segment: {
+        type: String,
+        enum: USER_SEGMENT,
+        default: USER_SEGMENT_CLIENT
+    },
+    password: {
+        type: String,
+        required: !isRequiredIfClient
+    }
 });
 
 module.exports = mongoose.model('Users', userSchema);

@@ -65,7 +65,46 @@ describe('User Controller', () => {
         fraudSituation: 'FRAUD',
         segment: 'CLIENT'
     };
-    predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
+    predictCreditScore.mockReturnValue({creditScore: 0, fraudSituation: 'FRAUD'}); 
+    const req = { body: userData };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    const saveMock = jest.fn().mockResolvedValue(createdUser);
+    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+
+    await userController.create(req, res);
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
+
+  it('should create a new user', async () => {
+    const userData = { 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        immovables: '>2',
+        monthlyIncome: '>1000',
+        employmentSituation: 'employee',
+        hasTesla: 'yes',
+        creditScore: 950,
+        fraudSituation: 'FRAUD'
+    };
+    const createdUser = { 
+        _id: 1, 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        immovables: '>2',
+        monthlyIncome: '>1000',
+        employmentSituation: 'employee',
+        approved: 'REJECTED',
+        hasTesla: 'yes',
+        creditScore: 950,
+        fraudSituation: 'TRUSTWORTHY',
+        segment: 'CLIENT'
+    };
+    predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}); 
     const req = { body: userData };
     const res = {
       status: jest.fn().mockReturnThis(),

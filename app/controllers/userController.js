@@ -21,6 +21,9 @@ const create = async (req, res, next) => {
     const { creditScore, fraudSituation } = predictCreditScore(req.body);
     user.creditScore = creditScore
     user.fraudSituation = fraudSituation;
+    if(user.fraudSituation == CREDIT_SCORE_VALIDATION_FRAUD) {
+        user.approved = APPROVED_STATUS_REJECTED
+    };
     return await user.save()
         .then(data => res.status(201).send(data))
         .catch(error => res.status(500).send({message: error.message}));

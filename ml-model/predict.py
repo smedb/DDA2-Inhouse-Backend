@@ -17,7 +17,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 model_path = os.path.join(script_dir, 'modelo_decision_tree.pkl')
 
 # Carga el modelo entrenado
-model = pickle.load(open(model_path, "rb"))
+model = joblib.load(model_path)
 
 # Crear un DataFrame con los datos de nueva entrada
 new_data_df = pd.DataFrame([new_data])

@@ -1,8 +1,13 @@
 const { Router } = require('express');
 const userController = require('../controllers/userController');
 
-const { bodyPostUserIsComplete, bodyPutUserIsComplete } = require('../middlewares/userValidations');
+const { 
+    bodyPostUserIsComplete, 
+    bodyPutUserIsComplete, 
+    bodyPostEmployeeLoginIsComplete, 
+    bodyPostEmployeeIsComplete } = require('../middlewares/userValidations');
 const { validate } = require('../middlewares/validations');
+const { validateToken } = require('../middlewares/validateToken');
 
 const routes = Router();
 
@@ -11,10 +16,13 @@ const routes = Router();
 
 routes.post("/users", bodyPostUserIsComplete, validate.validations, userController.create);
 
-routes.get("/users/unapproved", userController.getUsers);
+routes.get("/users/unapproved", validateToken, userController.getUsers);
 
-routes.put("/users/:userId", bodyPutUserIsComplete, validate.validations, userController.updateUser);
+routes.put("/users/:userId", bodyPutUserIsComplete, validateToken, validate.validations, userController.updateUser);
 
-routes.get("/users/:userId", userController.getUser);
+routes.post("/users/employee", bodyPostEmployeeIsComplete, validate.validations, userController.createEmployee);
+
+routes.post("/users/employee/login", bodyPostEmployeeLoginIsComplete, validate.validations, userController.loginEmployee);
+
 
 module.exports = { userRouter: routes };

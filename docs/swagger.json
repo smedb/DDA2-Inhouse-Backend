@@ -7,10 +7,17 @@
     },
     "servers": [
       {
-        "url": "http://localhost:3000",
+        "url": "http://localhost:8080",
         "description": "Local server"
       }
     ],
+    "securityDefinitions": {
+      "JWT": {
+        "type": "http",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
     "tags": [
         {
           "name": "Users",
@@ -23,6 +30,23 @@
             "summary": "Get all unapproved users",
             "description": "Return a list of all unapproved and non fraud users",
             "tags": ["Users"],
+            "security": [
+              {
+                "JWT": []
+              }
+            ],
+            "parameters": [
+              {
+                "name": "Authorization",
+                "in": "headers",
+                "description": "Token from login",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "eyJhbGciOiJIUzI1NiIsI..."
+              }
+          ],
             "responses": {
               "200": {
                 "description": "List of unnaproved and non fraud users",
@@ -151,9 +175,6 @@
                                   "email": {
                                     "type": "string"
                                   },
-                                  "password": {
-                                    "type": "string"
-                                  },
                                   "picture": {
                                     "type": "string"
                                   },
@@ -279,6 +300,11 @@
                 "summary": "Update a new user to approve or reject",
                 "description": "Will update an user depending on param",
                 "tags": [ "Users" ],
+                "security": [
+                  {
+                    "JWT": []
+                  }
+                ],
                 "parameters": [
                     {
                       "name": "userId",
@@ -289,6 +315,16 @@
                         "type": "string"
                       },
                       "example": "6644314177479c1546b55114"
+                    },
+                    {
+                      "name": "Authorization",
+                      "in": "headers",
+                      "description": "Token from login",
+                      "required": true,
+                      "schema": {
+                        "type": "string"
+                      },
+                      "example": "eyJhbGciOiJIUzI1NiIsI..."
                     }
                 ],
                 "requestBody": {
@@ -393,6 +429,131 @@
                 }
             }
         }
+    },
+    "/users/employee": {
+      "post": {
+        "summary": "Create new employee users [Batch]",
+        "description": "Will create the employee users with their encrypted password",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+              "application/json": {
+                "schema": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "firstName": {
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "password": {
+                              "type": "string"
+                            }
+                          }
+                      },
+                      "example": [
+                        {
+                          "firstName": "user1",
+                          "lastName": "perez",
+                          "email": "user.prueba21@cmail.com",
+                          "password": "asdasd"
+                        },
+                        {
+                          "firstName": "user1",
+                          "lastName": "perez",
+                          "email": "user.prueba22@cmail.com",
+                          "password": "asdasd"
+                        }
+                      ]
+                  }
+              }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Return the created employees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        }
+                    }
+                  }
+                },
+                "example": [
+                  { "email": "user.prueba21@cmail.com"},
+                  { "email": "user.prueba22@cmail.com"}
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/employee/login": {
+      "post": {
+        "summary": "Login for employee user",
+        "description": "Will return the token for the employee if the credentials are ok",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+              "application/json": {
+                "schema": {
+                      "type": "object",
+                      "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "password": {
+                            "type": "string"
+                          }
+                      },
+                      "example": {
+                          "email": "johndoe@cmail.com",
+                          "password": "password"
+                        }
+                  }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return the token to be able to use the allowed endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "token": {
+                        "type": "string"
+                      }
+                  }
+                },
+                "example": { 
+                  "email": "user.prueba21@cmail.com", 
+                  "token": "tokenmock"
+                }
+              }
+            }
+          }
+        }
+      }
     }
 }
 }

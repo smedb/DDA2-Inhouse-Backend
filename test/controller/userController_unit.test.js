@@ -45,7 +45,6 @@ describe('User Controller', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password123',
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
@@ -58,13 +57,13 @@ describe('User Controller', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password123',
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
         hasTesla: 'yes',
         creditScore: 950,
-        fraudSituation: 'FRAUD'
+        fraudSituation: 'FRAUD',
+        segment: 'CLIENT'
     };
     predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
     const req = { body: userData };
@@ -147,29 +146,29 @@ describe('User Controller', () => {
   })
 
 
-  describe('Get user by id', () => {
-     it('should get a user by ID', async () => {
-    const req = { params: { userId: '507f191e810c19729de860eb' } };
+  describe('Login employee', () => {
+     it('should login a user by email', async () => {
+    const req = { email: 'johndoe@cmail.com', password: 'pass' };
     const res = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
 
-    await userController.getUser(req, res);
+    await userController.loginEmployee(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-  it('should handle get user by ID error and return 500', async () => {
+  it('should handle login employee error and return 500', async () => {
     userSchema.findOne = jest.fn().mockImplementationOnce(() => Promise.reject({message: "error"}))
 
-    const req = { params: { userId: '507f191e810c19729de860eb' } };
+    const req = { email: 'johndoe@cmail.com', password: 'pass' };
     const res = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
 
-    await userController.getUser(req, res);
+    await userController.loginEmployee(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
   }); 
@@ -261,5 +260,56 @@ describe('User Controller', () => {
   
       expect(res.status).toHaveBeenCalledWith(500);
     });
+  });
+
+  describe('Create employee', () => {
+    it('should create a new employee user', async () => {
+    const userData = { 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123'
+    };
+    const createdUser = { 
+        _id: 1, 
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123',
+        segment: 'EMPLOYEE'
+    };
+    const req = { body: { users: [ userData ] } };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+    const saveMock = jest.fn().mockResolvedValue(createdUser);
+    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+
+    await userController.createEmployee(req, res);
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
+
+  it('should handle create user error and return 500', async () => {
+    const userData = {  
+        name: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123'
+    };
+    const saveMock = jest.fn().mockRejectedValue({});
+    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+
+    const req = { body: { users: [ userData ] } };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+
+    await userController.createEmployee(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
+
   })
 });

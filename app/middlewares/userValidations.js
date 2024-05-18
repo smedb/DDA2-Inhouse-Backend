@@ -1,4 +1,5 @@
 const { check } = require('express-validator');
+const jwt = require('jsonwebtoken');
 const {
   VALID_IMMOVABLES_OPTIONS,
   VALID_MONTHLY_INCOME_OPTIONS,
@@ -26,12 +27,6 @@ exports.bodyPostUserIsComplete = [
       .withMessage('lastName field is empty.')
       .isString()
       .withMessage('lastName field is not a string.'),
-
-    check('password')
-      .exists()
-      .withMessage('password field is empty.')
-      .isString()
-      .withMessage('password field is not a string.'),
 
     check('picture')
       .exists()
@@ -79,3 +74,53 @@ exports.bodyPutUserIsComplete = [
       .isBoolean()
       .withMessage('approved field is not a boolean.'),
 ]
+
+exports.bodyPostEmployeeIsComplete = [
+  check('users')
+    .exists()
+    .withMessage('users field is empty.')
+    .isArray()
+    .withMessage('users field is not an array.'),
+
+  check('users.*.email')
+    .exists()
+    .withMessage('email field is empty.')
+    .isString()
+    .withMessage('email field is not a string.')
+    .isEmail()
+    .withMessage('email field is not an email.'),
+
+  check('users.*.firstName')
+    .exists()
+    .withMessage('firstName field is empty.')
+    .isString()
+    .withMessage('firstName field is not a string.'),
+
+  check('users.*.lastName')
+    .exists()
+    .withMessage('lastName field is empty.')
+    .isString()
+    .withMessage('lastName field is not a string.'),
+
+  check('users.*.password')
+    .exists()
+    .withMessage('password field is empty.')
+    .isString()
+    .withMessage('password field is not a string.')
+];
+
+exports.bodyPostEmployeeLoginIsComplete = [
+  check('email')
+    .exists()
+    .withMessage('email field is empty.')
+    .isString()
+    .withMessage('email field is not a string.')
+    .isEmail()
+    .withMessage('email field is not an email.'),
+
+  check('password')
+    .exists()
+    .withMessage('password field is empty.')
+    .isString()
+    .withMessage('password field is not a string.')
+];

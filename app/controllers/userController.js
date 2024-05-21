@@ -13,6 +13,7 @@ const {
     USER_SEGMENT_CLIENT
 } = require('../helpers/constants');
 const { predictCreditScore } = require('../helpers/creditScoreHelper');
+const { compareFace } = require('../helpers/rekognitionHelper');
 
 const create = async (req, res, next) => {
     const user = userSchema({

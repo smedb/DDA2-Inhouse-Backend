@@ -1,41 +1,36 @@
 const AWS = require('aws-sdk');
+require('dotenv').config();
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region:process.env.AWS_REGION
-
-});
-// AWS.config.update({region: process.env.AWS_REGION});
+var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
+AWS.config.credentials = credentials;
+AWS.config.credentials.sessionToken=process.env.AWS_SESSION_TOKEN;
+AWS.config.update({region: 'us-east-1'});
 const rekognition = new AWS.Rekognition();
+
+const getBinary = (image) => {
+  const splitString = image.includes('image/png') ? "data:image/png;base64," : "data:image/jpg;base64,"
+  var base64Image = image.split(splitString)[1];
+  var binaryString = atob(base64Image);
+    var bytes = new Uint8Array(binaryString.length);
+    for (var i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
 
 const params = (sourceImage, targetImage) => ({
     SourceImage: {
-      Bytes: sourceImage,
-      // S3Object: {
-      //   Bucket: process.env.AWS_BUCKET_NAME,
-      //   Name: 'SOURCE_IMAGE_NAME'
-      // }
+      Bytes: getBinary(sourceImage)
     },
     TargetImage: {
-      Bytes: targetImage,
-      // S3Object: {
-      //   Bucket: process.env.AWS_BUCKET_NAME,
-      //   Name: 'TARGET_IMAGE_NAME'
-      // }
+      Bytes: getBinary(targetImage)
     },
     SimilarityThreshold: 80
 });
  
-const compareFaces = async (sourceImage, targetImage) => {
-  return await rekognition.compareFaces(params(sourceImage, targetImage), (err, data) => {
-    if (err) console.log(err, err.stack);
-    else {
-      console.log(data);
-      return data;
-    }
-  });
-}
+const compareFaces = async (sourceImage, targetImage) =>  
+  await rekognition.compareFaces(params(sourceImage, targetImage)).promise();
+
 
 module.exports = {
   compareFaces

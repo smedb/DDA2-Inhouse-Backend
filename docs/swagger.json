@@ -443,6 +443,9 @@
           "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
+                  "properties":{
+                    "users": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -479,15 +482,36 @@
                               "type": "string"
                             }
                           }
-                      },
-                      "example": [
-                        {
-                          "email": "user.prueba21@cmail.com"
-                        },
-                        {
-                          "email": "user.prueba22@cmail.com"
-                        }
-                      ]
+                      }
+                    }
+                  },
+                      "example": {
+                        "users": [
+                            {
+                                "email": "user.prueba20235@cmail.com",
+                                "firstName": "uer1",
+                                "lastName": "perez",
+                                "password": "pass",
+                                "gender": "M",
+                                "monthlySalary": 10000.00,
+                                "department": "department",
+                                "age": 50,
+                                "state": "state",
+                                "birthDate": "1970/05/31"
+                            },
+                            {
+                                "email": "user.prueba20345@cmail.com",
+                                "firstName": "uer1",
+                                "lastName": "perez",
+                                "password": "pass",
+                                "gender": "M",
+                                "monthlySalary": 10000.00,
+                                "department": "department",
+                                "age": 50,
+                                "state": "state",
+                                "birthDate": "1970/05/31"
+                            }
+                    ]}
                   }
               }
           }

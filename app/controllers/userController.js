@@ -46,6 +46,7 @@ const createEmployee = async (req, res, next) =>
             ...currentUser,
             password: await bcrypt.hash(currentUser.password, 10),
             segment: USER_SEGMENT_EMPLOYEE,
+            approved: APPROVED_STATUS_APPROVED
         });
         return user.save();
     }))
@@ -78,4 +79,12 @@ const loginEmployee = async (req, res, next) =>
         })
         .catch(error => res.status(500).send({message: error.message}));
 
-module.exports = { create, getUsers, updateUser, createEmployee, loginEmployee }
+const getEmployees = async (req, res, next) => 
+    userSchema.find({ 
+        segment: USER_SEGMENT_EMPLOYEE
+    },
+    { password: 0, approved: 0, segment: 0, verified: 0 })
+    .then(data => res.status(200).send(data))
+    .catch(error => res.status(500).send({message: error.message}));
+
+module.exports = { create, getUsers, updateUser, createEmployee, loginEmployee, getEmployees }

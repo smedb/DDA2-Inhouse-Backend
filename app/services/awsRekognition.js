@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const { getBinaryFromBase64Img } = require('../helpers/utils');
 require('dotenv').config();
 
 AWS.config.update({
@@ -9,23 +10,12 @@ AWS.config.update({
 
 const rekognition = new AWS.Rekognition();
 
-const getBinary = (image) => {
-  const splitString = image.includes('image/png') ? "data:image/png;base64," : "data:image/jpg;base64,"
-  var base64Image = image.split(splitString)[1];
-  var binaryString = atob(base64Image);
-    var bytes = new Uint8Array(binaryString.length);
-    for (var i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-}
-
 const params = (sourceImage, targetImage) => ({
     SourceImage: {
-      Bytes: getBinary(sourceImage)
+      Bytes: getBinaryFromBase64Img(sourceImage)
     },
     TargetImage: {
-      Bytes: getBinary(targetImage)
+      Bytes: getBinaryFromBase64Img(targetImage)
     },
     SimilarityThreshold: 80
 });

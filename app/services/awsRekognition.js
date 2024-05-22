@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 require('dotenv').config();
-
 var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
 AWS.config.credentials = credentials;
 AWS.config.credentials.sessionToken=process.env.AWS_SESSION_TOKEN;
@@ -28,8 +27,8 @@ const params = (sourceImage, targetImage) => ({
     SimilarityThreshold: 80
 });
  
-const compareFaces = async (sourceImage, targetImage) =>  
-  await rekognition.compareFaces(params(sourceImage, targetImage)).promise();
+const compareFaces = (sourceImage, targetImage) =>  
+  rekognition.compareFaces(params(sourceImage, targetImage)).promise();
 
 
 module.exports = {

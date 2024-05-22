@@ -1,4 +1,4 @@
-const { compareFaces } = require('../services/integracionRekognition');
+const { compareFaces } = require('../services/awsRekognition');
 const { BIOMETRIC_VALIDATION_VERIFIED, BIOMETRIC_VALIDATION_INVALID } = require('./constants');
 
 const parseBiometricStatus = async (pictureIdPassport, pictureSelfie) => {

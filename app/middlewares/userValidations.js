@@ -42,7 +42,7 @@ exports.bodyPostUserIsComplete = [
       .isString()
       .withMessage('pictureIdPassport field is not a string.')
       .matches(/data:image/)
-      .withMessage('pictureIdPassport should be a base 64 image.'),,
+      .withMessage('pictureIdPassport should be a base 64 image.'),
 
     check('immovables')
       .exists()

@@ -2,7 +2,8 @@ const {
     CREDIT_SCORE_VALIDATION_FRAUD,
     APPROVED_STATUS_REJECTED,
     CREDIT_SCORE_VALIDATION_TRUSTWORTHY,
-    APPROVED_STATUS_APPROVED
+    APPROVED_STATUS_APPROVED,
+    BIOMETRIC_VALIDATION_VERIFIED
 } = require('../helpers/constants');
 const { predictCreditScore } = require('../helpers/creditScoreHelper');
 const { parseBiometricStatus } = require('../helpers/rekognitionHelper');

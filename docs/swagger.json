@@ -206,8 +206,8 @@
                                 "monthlyIncome": ">1000",
                                 "employmentSituation": "employee",
                                 "hasTesla": "yes",
-                                "pictureSelfie": "selfie",
-                                "pictureIdPassport": "id picture"
+                                "pictureSelfie": "base 64 selfie",
+                                "pictureIdPassport": "base 64 id/passport picture"
                               }
                         }
                     }

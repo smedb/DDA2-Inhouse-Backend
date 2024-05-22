@@ -175,7 +175,10 @@
                                   "email": {
                                     "type": "string"
                                   },
-                                  "picture": {
+                                  "pictureSelfie": {
+                                    "type": "string"
+                                  },
+                                  "pictureIdPassport": {
                                     "type": "string"
                                   },
                                   "immovables": {
@@ -199,12 +202,12 @@
                                 "email": "user.prueba21@cmail.com",
                                 "firstName": "uer1",
                                 "lastName": "perez",
-                                "password": "asdasd",
                                 "immovables": "0",
                                 "monthlyIncome": ">1000",
                                 "employmentSituation": "employee",
                                 "hasTesla": "yes",
-                                "picture": "dasdfadsf"
+                                "pictureSelfie": "selfie",
+                                "pictureIdPassport": "id picture"
                               }
                         }
                     }
@@ -455,21 +458,34 @@
                             },
                             "password": {
                               "type": "string"
+                            },
+                            "monthlySalary": {
+                              "type": "number"
+                            },
+                            "department": {
+                              "type": "string"
+                            },
+                            "age": {
+                              "type": "number"
+                            },
+                            "state": {
+                              "type": "string"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["F", "M", "Other"]
+                            },
+                            "birthDate": {
+                              "type": "string"
                             }
                           }
                       },
                       "example": [
                         {
-                          "firstName": "user1",
-                          "lastName": "perez",
-                          "email": "user.prueba21@cmail.com",
-                          "password": "asdasd"
+                          "email": "user.prueba21@cmail.com"
                         },
                         {
-                          "firstName": "user1",
-                          "lastName": "perez",
-                          "email": "user.prueba22@cmail.com",
-                          "password": "asdasd"
+                          "email": "user.prueba22@cmail.com"
                         }
                       ]
                   }

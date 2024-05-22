@@ -3,7 +3,8 @@ const {
   VALID_IMMOVABLES_OPTIONS,
   VALID_MONTHLY_INCOME_OPTIONS,
   VALID_EMPLOYMENT_SITUATION_OPTIONS,
-  VALID_HAS_TESLA_OPTIONS
+  VALID_HAS_TESLA_OPTIONS,
+  GENDERS
 } = require('../helpers/constants');
 
 exports.bodyPostUserIsComplete = [
@@ -27,11 +28,17 @@ exports.bodyPostUserIsComplete = [
       .isString()
       .withMessage('lastName field is not a string.'),
 
-    check('picture')
+    check('pictureSelfie')
       .exists()
-      .withMessage('picture field is empty.')
+      .withMessage('pictureSelfie field is empty.')
       .isString()
-      .withMessage('picture field is not a string.'),
+      .withMessage('pictureSelfie field is not a string.'),
+
+    check('pictureIdPassport')
+      .exists()
+      .withMessage('pictureIdPassport field is empty.')
+      .isString()
+      .withMessage('pictureIdPassport field is not a string.'),
 
     check('immovables')
       .exists()
@@ -105,7 +112,47 @@ exports.bodyPostEmployeeIsComplete = [
     .exists()
     .withMessage('password field is empty.')
     .isString()
-    .withMessage('password field is not a string.')
+    .withMessage('password field is not a string.'),
+
+  check('users.*.monthlySalary')
+    .exists()
+    .withMessage('monthlySalary field is empty.')
+    .isFloat()
+    .withMessage('monthlySalary field is not a float.'),
+
+  check('users.*.department')
+    .exists()
+    .withMessage('department field is empty.')
+    .isString()
+    .withMessage('department field is not a string.'),
+
+  check('users.*.age')
+    .exists()
+    .withMessage('age field is empty.')
+    .isInt()
+    .withMessage('age field is not an int.'),
+
+  check('users.*.state')
+    .exists()
+    .withMessage('state field is empty.')
+    .isString()
+    .withMessage('state field is not a string.'),
+
+  check('users.*.gender')
+    .exists()
+    .withMessage('gender field is empty.')
+    .isString()
+    .withMessage('gender field is not a string.')
+    .isIn(GENDERS)
+    .withMessage(`gender should be one of these values: ${GENDERS.join(', ')}`),
+
+  check('users.*.birthDate')
+    .exists()
+    .withMessage('birthDate field is empty.')
+    .isString()
+    .withMessage('birthDate field is not a string.')
+    .isDate()
+    .withMessage('birthDate field is not a date.')
 ];
 
 exports.bodyPostEmployeeLoginIsComplete = [

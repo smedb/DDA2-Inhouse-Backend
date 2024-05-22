@@ -1,34 +1,39 @@
 const AWS = require('aws-sdk');
 
-// Configure the AWS SDK with your credentials and region
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
-  region: 'YOUR_REGION'
-});
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region:process.env.AWS_REGION
 
+});
+// AWS.config.update({region: process.env.AWS_REGION});
 const rekognition = new AWS.Rekognition();
 
-const params = {
+const params = (sourceImage, targetImage) => ({
     SourceImage: {
-      S3Object: {
-        Bucket: 'YOUR_BUCKET_NAME',
-        Name: 'SOURCE_IMAGE_NAME'
-      }
+      Bytes: sourceImage,
+      // S3Object: {
+      //   Bucket: process.env.AWS_BUCKET_NAME,
+      //   Name: 'SOURCE_IMAGE_NAME'
+      // }
     },
     TargetImage: {
-      S3Object: {
-        Bucket: 'YOUR_BUCKET_NAME',
-        Name: 'TARGET_IMAGE_NAME'
-      }
+      Bytes: targetImage,
+      // S3Object: {
+      //   Bucket: process.env.AWS_BUCKET_NAME,
+      //   Name: 'TARGET_IMAGE_NAME'
+      // }
     },
-    SimilarityThreshold: 90
-};
+    SimilarityThreshold: 80
+});
  
-const compareFaces = () => {
-  rekognition.compareFaces(params, (err, data) => {
+const compareFaces = async (sourceImage, targetImage) => {
+  return await rekognition.compareFaces(params(sourceImage, targetImage), (err, data) => {
     if (err) console.log(err, err.stack);
-    else console.log(data);
+    else {
+      console.log(data);
+      return data;
+    }
   });
 }
 

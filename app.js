@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 mongoose.connect(DB_URL).then(() => console.log("Connected to mongo DB"))

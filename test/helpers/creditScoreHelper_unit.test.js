@@ -1,4 +1,3 @@
-const { execSync } = require('child_process');
 const { predictCreditScore, calculateFraudSituation } = require('../../app/helpers/creditScoreHelper');
 const { objectToSnakeCase, isBetweenRange } = require('../../app/helpers/utils');
 const { predictMLCreditScore } = require('../../app/services/predictCreditScore');

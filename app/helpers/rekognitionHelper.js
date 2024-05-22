@@ -8,9 +8,9 @@ const parseBiometricStatus = async (pictureIdPassport, pictureSelfie) => {
         return {};
     }
     const trustLevel = rekognitionResult.FaceMatches.length > 0 ? 
-        rekognitionResult.FaceMatches.sort(face => face.Similarity)[rekognitionResult.FaceMatches.length - 1].Similarity : 
+        rekognitionResult.FaceMatches.sort((a, b) => b.Similarity - a.Similarity)[0].Similarity : 
         0;
-    return { verified: trustLevel >= 80 && trustLevel < 100 ? 
+    return { verified: (trustLevel >= 80 && trustLevel < 100) ? 
         BIOMETRIC_VALIDATION_VERIFIED : 
         BIOMETRIC_VALIDATION_INVALID }
 }

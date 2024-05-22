@@ -2,11 +2,19 @@ const request = require('supertest');
 const app = require('../../app');
 const userSchema = require('../../app/models/user');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
+const { parseBiometricStatus } = require('../../app/helpers/rekognitionHelper');
 
-  jest.mock('../../app/helpers/creditScoreHelper', () => ({
+
+jest.mock('../../app/helpers/creditScoreHelper', () => ({
     predictCreditScore: jest.fn().mockReturnValue({
       creditScore: 950,
       fraudSituation: 'FRAUD',
+    }),
+  }));
+
+jest.mock('../../app/helpers/rekognitionHelper', () => ({
+  parseBiometricStatus: jest.fn().mockReturnValue({
+      verified: 'VERIFIED',
     }),
   }));
 
@@ -138,7 +146,7 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('lastName field is not a string.'))
     );
 
-    it("Should fail because picture is null", () =>
+    it("Should fail because pictureSelfie is null", () =>
       request(app)
         .post('/users')
         .send({  
@@ -148,10 +156,10 @@ describe('Integration test /users POST', () => {
           password: "12313",
         })
         .expect(400)
-        .then(response => expect(response.body.message).toMatch('picture field is empty.'))
+        .then(response => expect(response.body.message).toMatch('pictureSelfie field is empty.'))
     );
 
-    it("Should fail because picture is not a string", () =>
+    it("Should fail because pictureSelfie is not a string", () =>
       request(app)
         .post('/users')
         .send({  
@@ -159,11 +167,69 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 12313
+          pictureSelfie: 12313
         })
         .expect(400)
-        .then(response => expect(response.body.message).toMatch('picture field is not a string.'))
+        .then(response => expect(response.body.message).toMatch('pictureSelfie field is not a string.'))
     );
+
+    it("Should fail because pictureSelfie is not a base 64 img", () =>
+    request(app)
+      .post('/users')
+      .send({  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: "12313",
+        pictureSelfie: "iVBORw0KGgoAAAANSUhEUgAAA..."
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('pictureSelfie should be a base 64 image.'))
+  );
+
+  it("Should fail because pictureIdPassport is null", () =>
+    request(app)
+      .post('/users')
+      .send({  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        password: "12313",
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('pictureIdPassport field is empty.'))
+    );
+
+    it("Should fail because pictureIdPassport is not a string", () =>
+      request(app)
+        .post('/users')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: "12313",
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: 12313
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('pictureIdPassport field is not a string.'))
+    );
+
+  it("Should fail because pictureIdPassport is not a base 64 img", () =>
+    request(app)
+      .post('/users')
+      .send({  
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: "12313",
+        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureIdPassport: "iVBORw0KGgoAAAANSUhEUgAAA..."
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('pictureIdPassport should be a base 64 image.'))
+  );
 
     it("Should fail because immovables is empty", () =>
       request(app)
@@ -173,7 +239,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture'
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         })
         .expect(400)
         .then(response => expect(response.body.message).toMatch('immovables field is empty.'))
@@ -187,7 +254,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: 1
         })
         .expect(400)
@@ -202,7 +270,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '0-2'
         })
         .expect(400)
@@ -217,7 +286,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2'
         })
         .expect(400)
@@ -232,7 +302,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: 123132
         })
@@ -248,7 +319,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>500'
         })
@@ -265,7 +337,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000'
         })
@@ -281,7 +354,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 1
@@ -298,7 +372,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employed'
@@ -315,7 +390,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee'
@@ -332,7 +408,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -350,7 +427,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          picture: 'picture',
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -360,6 +438,26 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('hasTesla should be one of these values: no, yes'))
     );
 
+    it("Should fail because params should be the declared ones", () =>
+      request(app)
+        .post('/users')
+        .send({  
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: "12313",
+          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          immovables: '1-2',
+          monthlyIncome: '>1000',
+          employmentSituation: 'employee',
+          hasTesla: 'yes',
+          anotherKey: 'anothervalue'
+        })
+        .expect(400)
+        .then(response => expect(response.body.message).toMatch('The expected body fields are email, firstName, lastName, pictureSelfie, pictureIdPassport, immovables, monthlyIncome, employmentSituation, hasTesla'))
+  );
+
         
   })
     it("Should success creating a user", async () => {
@@ -367,8 +465,8 @@ describe('Integration test /users POST', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password123',
-        picture: 'picture',
+        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
@@ -378,14 +476,15 @@ describe('Integration test /users POST', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password123',
-        picture: 'picture',
+        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
         hasTesla: 'yes'
       };
       predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
+      parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
       const saveMock = jest.fn().mockResolvedValue(createdUser);
       jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
       return await request(app)
@@ -663,14 +762,277 @@ describe('Validations', () => {
       .then(response => expect(response.body.message).toMatch('password field is not a string.'))
     );
 
-})
+  it("Should fail because monthlySalary is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('monthlySalary field is empty.'))
+  );
+
+  it("Should fail because monthlySalary is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: '12313',
+          monthlySalary: 'ww'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('monthlySalary field is not a float.'))
+    );
+  it("Should fail because department is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('department field is empty.'))
+  );
+
+  it("Should fail because department is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: '12313',
+          monthlySalary: 1000.0,
+          department: 1212
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('department field is not a string.'))
+    );
+
+  it("Should fail because age is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '123'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('age field is empty.'))
+  );
+
+  it("Should fail because age is not a number", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'johndoe@example.com',
+          password: '12313',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 'asdad'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('age field is not an int.'))
+    );
+
+  it("Should fail because state is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('state field is empty.'))
+  );
+
+  it("Should fail because state is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: 1
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('state field is not a string.'))
+    );
+
+  it("Should fail because gender is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: 'california'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('gender field is empty.'))
+  );
+
+  it("Should fail because gender is not a string", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: '1',
+          gender: 1
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('gender field is not a string.'))
+    );
+
+  it("Should fail because gender is not a valid value", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: '1',
+          gender: 'J'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('gender should be one of these values: F, M, Other'))
+    );
+
+  it("Should fail because birthDate is null", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: 'california',
+          gender: 'M'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('birthDate field is empty.'))
+  );
+
+  it("Should fail because birthDate is not a date", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: '1',
+          gender: 'M',
+          birthDate: 'a'
+        }]
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('birthDate field is not a date.'))
+    );
+
+  it("Should fail because params should be the declared ones", () =>
+    request(app)
+      .post('/users/employee')
+      .send({  
+        users: [{
+          firstName: 'John',
+          lastName: 'lastName',
+          email: 'johndoe@example.com',
+          password: 'password123',
+          monthlySalary: 1000.0,
+          department: '1212',
+          age: 30,
+          state: '1',
+          gender: 'M',
+          birthDate: '1980/09/12'
+        }],
+        anotherKey: 'key'
+      })
+      .expect(400)
+      .then(response => expect(response.body.message).toMatch('The expected body fields are users'))
+);
+
+  })
   it("Should success creating a user", async () => {
     const userData = {
       users: [{  
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        password: 'password123'
+        password: 'password123',
+        monthlySalary: 1000.0,
+        department: '1212',
+        age: 30,
+        state: '1',
+        gender: 'M',
+        birthDate: '1980/05/11'
       }]
     };
     const createdUser = {  
@@ -678,11 +1040,12 @@ describe('Validations', () => {
       lastName: 'Doe',
       email: 'johndoe@example.com',
       password: 'password123',
-      picture: 'picture',
-      immovables: '>2',
-      monthlyIncome: '>1000',
-      employmentSituation: 'employee',
-      hasTesla: 'yes'
+      monthlySalary: 1000.0,
+      department: '1212',
+      age: 30,
+      state: '1',
+      gender: 'M',
+      birthDate: '1980/05/11'
     };
     const saveMock = jest.fn().mockResolvedValue(createdUser);
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);

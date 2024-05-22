@@ -1,9 +1,17 @@
-const { validationResult } = require('express-validator');
+const { validationResult, matchedData } = require('express-validator');
 
 exports.validate = {
   validations: (req, res, next) => {
     try {
       const result = validationResult(req);
+      const data = matchedData(req);
+
+      if (Object.keys(data).length !== Object.keys(req.body).length) {
+        result.errors.push({
+          msg: `The expected body fields are ${Object.keys(data).join(', ')}`,
+        });
+      }
+      
       if (result.isEmpty()) {
         next();
       } else {

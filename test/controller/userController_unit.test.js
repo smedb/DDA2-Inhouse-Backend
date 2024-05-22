@@ -1,5 +1,6 @@
 const userController = require('../../app/controllers/userController');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
+const { parseBiometricStatus } = require('../../app/helpers/rekognitionHelper');
 const userSchema = require('../../app/models/user');
 
   jest.mock('../../app/helpers/creditScoreHelper', () => ({
@@ -8,6 +9,12 @@ const userSchema = require('../../app/models/user');
       fraudSituation: 'FRAUD',
     }),
   }));
+
+  jest.mock('../../app/helpers/rekognitionHelper', () => ({
+    parseBiometricStatus: jest.fn().mockReturnValue({
+        verified: 'VERIFIED',
+      }),
+    }));
 
 describe('User Controller', () => {
 
@@ -66,6 +73,7 @@ describe('User Controller', () => {
         segment: 'CLIENT'
     };
     predictCreditScore.mockReturnValue({creditScore: 0, fraudSituation: 'FRAUD'}); 
+    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const req = { body: userData };
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -105,6 +113,7 @@ describe('User Controller', () => {
         segment: 'CLIENT'
     };
     predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}); 
+    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const req = { body: userData };
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -125,6 +134,7 @@ describe('User Controller', () => {
         password: 'password123'
     };
     predictCreditScore.mockImplementationOnce(() => Promise.resolve({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}));
+    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const saveMock = jest.fn().mockRejectedValue({});
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 

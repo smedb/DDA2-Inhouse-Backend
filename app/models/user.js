@@ -10,7 +10,8 @@ const {
     VALID_MONTHLY_INCOME_OPTIONS,
     VALID_IMMOVABLES_OPTIONS,
     USER_SEGMENT,
-    USER_SEGMENT_CLIENT
+    USER_SEGMENT_CLIENT,
+    GENDERS
 } = require('../helpers/constants');
 
 const isRequiredIfClient = () => this.segment == USER_SEGMENT_CLIENT;
@@ -32,7 +33,11 @@ const userSchema = mongoose.Schema({
             partialFilterExpression: {email: {$type: "string"}}
         }
     },
-    picture: {
+    pictureSelfie: {
+        type: String,
+        required: isRequiredIfClient // BASE64 string
+    },
+    pictureIdPassport: {
         type: String,
         required: isRequiredIfClient // BASE64 string
     },
@@ -83,7 +88,32 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: !isRequiredIfClient
-    }
+    },
+    monthlySalary: {
+        type: Number,
+        required: !isRequiredIfClient
+    },
+    department: {
+        type: String,
+        required: !isRequiredIfClient
+    },
+    age: {
+        type: Number,
+        required: !isRequiredIfClient
+    },
+    state: {
+        type: String,
+        required: !isRequiredIfClient
+    },
+    gender: {
+        type: String,
+        enum: GENDERS,
+        required: !isRequiredIfClient
+    },
+    birthDate: {
+        type: Date,
+        required: !isRequiredIfClient
+    },
 });
 
 module.exports = mongoose.model('Users', userSchema);

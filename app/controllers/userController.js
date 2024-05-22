@@ -1,9 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/user');
-const { 
-    BIOMETRIC_VALIDATION, 
-    BIOMETRIC_VALIDATION_INVALID, 
+const {
     CREDIT_SCORE_VALIDATION, 
     APPROVED_STATUS_PENDING, 
     CREDIT_SCORE_VALIDATION_FRAUD,
@@ -12,18 +10,12 @@ const {
     USER_SEGMENT_EMPLOYEE,
     USER_SEGMENT_CLIENT
 } = require('../helpers/constants');
-const { predictCreditScore } = require('../helpers/creditScoreHelper');
+const { userBuilderOrchestrator } = require('../helpers/userHelper');
 
 const create = async (req, res, next) => {
     const user = userSchema({
-        ...req.body,
+        ...await userBuilderOrchestrator(req.body)
     });
-    const { creditScore, fraudSituation } = predictCreditScore(req.body);
-    user.creditScore = creditScore
-    user.fraudSituation = fraudSituation;
-    if(user.fraudSituation == CREDIT_SCORE_VALIDATION_FRAUD) {
-        user.approved = APPROVED_STATUS_REJECTED
-    };
     return await user.save()
         .then(data => res.status(201).send(data))
         .catch(error => res.status(500).send({message: error.message}));
@@ -31,7 +23,6 @@ const create = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => 
     userSchema.find({ 
-        verified: BIOMETRIC_VALIDATION.filter(v => v != BIOMETRIC_VALIDATION_INVALID), 
         approved: APPROVED_STATUS_PENDING,
         fraudSituation: CREDIT_SCORE_VALIDATION.filter(v => v != CREDIT_SCORE_VALIDATION_FRAUD),
         segment: USER_SEGMENT_CLIENT

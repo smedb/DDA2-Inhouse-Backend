@@ -13,8 +13,20 @@ const isBetweenRange = (range, value) => {
     return maxRange ? (value <= maxRange && value >= minRange) : value >= minRange;
 }
 
+const getBinaryFromBase64Img = (image) => {
+    const splitString = image.includes('image/png') ? "data:image/png;base64," : "data:image/jpg;base64,"
+    var base64Image = image.split(splitString)[1];
+    var binaryString = atob(base64Image);
+      var bytes = new Uint8Array(binaryString.length);
+      for (var i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+  }
+
 module.exports = {
     camelToSnakeCase,
     objectToSnakeCase,
-    isBetweenRange
+    isBetweenRange,
+    getBinaryFromBase64Img
 }

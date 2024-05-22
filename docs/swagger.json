@@ -175,7 +175,10 @@
                                   "email": {
                                     "type": "string"
                                   },
-                                  "picture": {
+                                  "pictureSelfie": {
+                                    "type": "string"
+                                  },
+                                  "pictureIdPassport": {
                                     "type": "string"
                                   },
                                   "immovables": {
@@ -199,12 +202,12 @@
                                 "email": "user.prueba21@cmail.com",
                                 "firstName": "uer1",
                                 "lastName": "perez",
-                                "password": "asdasd",
                                 "immovables": "0",
                                 "monthlyIncome": ">1000",
                                 "employmentSituation": "employee",
                                 "hasTesla": "yes",
-                                "picture": "dasdfadsf"
+                                "pictureSelfie": "base 64 selfie",
+                                "pictureIdPassport": "base 64 id/passport picture"
                               }
                         }
                     }
@@ -440,6 +443,9 @@
           "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
+                  "properties":{
+                    "users": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -455,23 +461,57 @@
                             },
                             "password": {
                               "type": "string"
+                            },
+                            "monthlySalary": {
+                              "type": "number"
+                            },
+                            "department": {
+                              "type": "string"
+                            },
+                            "age": {
+                              "type": "number"
+                            },
+                            "state": {
+                              "type": "string"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["F", "M", "Other"]
+                            },
+                            "birthDate": {
+                              "type": "string"
                             }
                           }
-                      },
-                      "example": [
-                        {
-                          "firstName": "user1",
-                          "lastName": "perez",
-                          "email": "user.prueba21@cmail.com",
-                          "password": "asdasd"
-                        },
-                        {
-                          "firstName": "user1",
-                          "lastName": "perez",
-                          "email": "user.prueba22@cmail.com",
-                          "password": "asdasd"
-                        }
-                      ]
+                      }
+                    }
+                  },
+                      "example": {
+                        "users": [
+                            {
+                                "email": "user.prueba20235@cmail.com",
+                                "firstName": "uer1",
+                                "lastName": "perez",
+                                "password": "pass",
+                                "gender": "M",
+                                "monthlySalary": 10000.00,
+                                "department": "department",
+                                "age": 50,
+                                "state": "state",
+                                "birthDate": "1970/05/31"
+                            },
+                            {
+                                "email": "user.prueba20345@cmail.com",
+                                "firstName": "uer1",
+                                "lastName": "perez",
+                                "password": "pass",
+                                "gender": "M",
+                                "monthlySalary": 10000.00,
+                                "department": "department",
+                                "age": 50,
+                                "state": "state",
+                                "birthDate": "1970/05/31"
+                            }
+                    ]}
                   }
               }
           }

@@ -297,7 +297,7 @@
                 }
               }
             }
-          },
+        },
         "/users/{userId}": {
             "put": {
                 "summary": "Update a new user to approve or reject",
@@ -432,169 +432,270 @@
                 }
             }
         }
-    },
-    "/users/employee": {
-      "post": {
-        "summary": "Create new employee users [Batch]",
-        "description": "Will create the employee users with their encrypted password",
-        "tags": ["Users"],
-        "requestBody": {
-          "required": true,
-          "content": {
-              "application/json": {
+        },
+        "/users/employee": {
+          "post": {
+            "summary": "Create new employee users [Batch]",
+            "description": "Will create the employee users with their encrypted password",
+            "tags": ["Users"],
+            "requestBody": {
+              "required": true,
+              "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties":{
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                  "type": "string"
+                                },
+                                "lastName": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                },
+                                "password": {
+                                  "type": "string"
+                                },
+                                "monthlySalary": {
+                                  "type": "number"
+                                },
+                                "department": {
+                                  "type": "string"
+                                },
+                                "age": {
+                                  "type": "number"
+                                },
+                                "state": {
+                                  "type": "string"
+                                },
+                                "gender": {
+                                  "type": "string",
+                                  "enum": ["F", "M", "Other"]
+                                },
+                                "birthDate": {
+                                  "type": "string"
+                                }
+                              }
+                          }
+                        }
+                      },
+                          "example": {
+                            "users": [
+                                {
+                                    "email": "user.prueba20235@cmail.com",
+                                    "firstName": "uer1",
+                                    "lastName": "perez",
+                                    "password": "pass",
+                                    "gender": "M",
+                                    "monthlySalary": 10000.00,
+                                    "department": "department",
+                                    "age": 50,
+                                    "state": "state",
+                                    "birthDate": "1970/05/31"
+                                },
+                                {
+                                    "email": "user.prueba20345@cmail.com",
+                                    "firstName": "uer1",
+                                    "lastName": "perez",
+                                    "password": "pass",
+                                    "gender": "M",
+                                    "monthlySalary": 10000.00,
+                                    "department": "department",
+                                    "age": 50,
+                                    "state": "state",
+                                    "birthDate": "1970/05/31"
+                                }
+                        ]}
+                      }
+                  }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Return the created employees",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "array",
+                      "items": {
+                          "type": "object",
+                          "properties": {
+                            "email": {
+                              "type": "string"
+                            }
+                        }
+                      }
+                    },
+                    "example": [
+                      { "email": "user.prueba21@cmail.com"},
+                      { "email": "user.prueba22@cmail.com"}
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "get": {
+            "summary": "Get all employee users",
+            "description": "Return a list of all employees",
+            "tags": ["Users"],
+            "security": [
+              {
+                "JWT": []
+              }
+            ],
+            "parameters": [
+              {
+                "name": "Authorization",
+                "in": "headers",
+                "description": "Token from login",
+                "required": true,
                 "schema": {
-                  "type": "object",
-                  "properties":{
-                    "users": {
+                  "type": "string"
+                },
+                "example": "eyJhbGciOiJIUzI1NiIsI..."
+              }
+          ],
+            "responses": {
+              "200": {
+                "description": "List of employee users",
+                "content": {
+                  "application/json": {
+                    "schema": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
                           "firstName": {
-                              "type": "string"
-                            },
-                            "lastName": {
-                              "type": "string"
-                            },
-                            "email": {
-                              "type": "string"
-                            },
-                            "password": {
-                              "type": "string"
-                            },
-                            "monthlySalary": {
-                              "type": "number"
-                            },
-                            "department": {
-                              "type": "string"
-                            },
-                            "age": {
-                              "type": "number"
-                            },
-                            "state": {
-                              "type": "string"
-                            },
-                            "gender": {
-                              "type": "string",
-                              "enum": ["F", "M", "Other"]
-                            },
-                            "birthDate": {
-                              "type": "string"
-                            }
-                          }
-                      }
-                    }
-                  },
-                      "example": {
-                        "users": [
-                            {
-                                "email": "user.prueba20235@cmail.com",
-                                "firstName": "uer1",
-                                "lastName": "perez",
-                                "password": "pass",
-                                "gender": "M",
-                                "monthlySalary": 10000.00,
-                                "department": "department",
-                                "age": 50,
-                                "state": "state",
-                                "birthDate": "1970/05/31"
-                            },
-                            {
-                                "email": "user.prueba20345@cmail.com",
-                                "firstName": "uer1",
-                                "lastName": "perez",
-                                "password": "pass",
-                                "gender": "M",
-                                "monthlySalary": 10000.00,
-                                "department": "department",
-                                "age": 50,
-                                "state": "state",
-                                "birthDate": "1970/05/31"
-                            }
-                    ]}
-                  }
-              }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Return the created employees",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                      "type": "object",
-                      "properties": {
-                        "email": {
-                          "type": "string"
-                        }
-                    }
-                  }
-                },
-                "example": [
-                  { "email": "user.prueba21@cmail.com"},
-                  { "email": "user.prueba22@cmail.com"}
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/employee/login": {
-      "post": {
-        "summary": "Login for employee user",
-        "description": "Will return the token for the employee if the credentials are ok",
-        "tags": ["Users"],
-        "requestBody": {
-          "required": true,
-          "content": {
-              "application/json": {
-                "schema": {
-                      "type": "object",
-                      "properties": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
                           "email": {
                             "type": "string"
                           },
-                          "password": {
+                          "monthlySalary": {
+                            "type": "number"
+                          },
+                          "department": {
                             "type": "string"
+                          },
+                          "age": {
+                            "type": "number"
+                          },
+                          "state": {
+                            "type": "string"
+                          },
+                          "gender": {
+                            "type": "string",
+                            "enum": ["M", "F", "Other"]
+                          },
+                          "birthDate": {
+                            "type": "string"
+                          },
+                          "__v": {
+                            "type": "number"
                           }
-                      },
-                      "example": {
-                          "email": "johndoe@cmail.com",
-                          "password": "password"
                         }
+                      }
+                    },
+                    "example": [
+                        {
+                          "_id": "664e1f64632af5eb4d9dfde5",
+                          "firstName": "uer1",
+                          "lastName": "perez",
+                          "email": "user.prueba20345@cmail.com",
+                          "monthlySalary": 10000,
+                          "department": "department",
+                          "age": 50,
+                          "state": "state",
+                          "gender": "M",
+                          "birthDate": "1970-05-31T03:00:00.000Z",
+                          "__v": 0
+                      },
+                      {
+                          "_id": "664e1f64632af5eb4d9dfde7",
+                          "firstName": "uer1",
+                          "lastName": "perez",
+                          "email": "user.prueba20235@cmail.com",
+                          "monthlySalary": 10000,
+                          "department": "department",
+                          "age": 50,
+                          "state": "state",
+                          "gender": "M",
+                          "birthDate": "1970-05-31T03:00:00.000Z",
+                          "__v": 0
+                      }
+                    ]
                   }
+                }
               }
+            }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Return the token to be able to use the allowed endpoints",
-            "content": {
-              "application/json": {
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                      "email": {
-                        "type": "string"
-                      },
-                      "token": {
-                        "type": "string"
+        "/users/employee/login": {
+          "post": {
+            "summary": "Login for employee user",
+            "description": "Will return the token for the employee if the credentials are ok",
+            "tags": ["Users"],
+            "requestBody": {
+              "required": true,
+              "content": {
+                  "application/json": {
+                    "schema": {
+                          "type": "object",
+                          "properties": {
+                              "email": {
+                                "type": "string"
+                              },
+                              "password": {
+                                "type": "string"
+                              }
+                          },
+                          "example": {
+                              "email": "johndoe@cmail.com",
+                              "password": "password"
+                            }
                       }
                   }
-                },
-                "example": { 
-                  "email": "user.prueba21@cmail.com", 
-                  "token": "tokenmock"
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Return the token to be able to use the allowed endpoints",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "token": {
+                            "type": "string"
+                          }
+                      }
+                    },
+                    "example": { 
+                      "email": "user.prueba21@cmail.com", 
+                      "token": "tokenmock"
+                    }
+                  }
                 }
               }
             }
           }
         }
-      }
-    }
 }
 }
   

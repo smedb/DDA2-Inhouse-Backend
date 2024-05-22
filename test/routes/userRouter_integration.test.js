@@ -1163,3 +1163,54 @@ describe('Validations', () => {
       .then(response => expect(response.body.email).toMatch('johndoe@example.com'))
   });
 });
+
+describe('Integration tests /users/employee GET', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+});
+
+  it("Should fail because there is no token present", () =>
+    request(app)
+      .put('/users/employee')
+      .send()
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
+ 
+  it("Should success retrieving users", async () => {
+    userSchema.find = jest.fn().mockResolvedValue([
+      {  
+        _id: '507f191e810c19729de860ea',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        monthlySalary: 123123,
+        department: 'mock',
+        state: 'mock',
+        age: 45,
+        gender: 'M',
+        birthDate: '1970-05-31T03:00:00.000Z'
+    },
+    {  
+        _id: '507f191e810c19729de860eb',
+        firstName: 'John2',
+        lastName: 'Doe2',
+        email: 'johndoe2@example.com',
+        monthlySalary: 123123,
+        department: 'mock',
+        state: 'mock',
+        age: 45,
+        gender: 'M',
+        birthDate: '1970-05-31T03:00:00.000Z'
+    }
+    ]);
+    return await request(app)
+        .get('/users/employee')
+        .set({'Authorization': 'Token 1234567890'})
+        .send()
+        .expect(200)
+        .then(response => expect(response.body[0].firstName).toMatch('John'))}
+    );
+})

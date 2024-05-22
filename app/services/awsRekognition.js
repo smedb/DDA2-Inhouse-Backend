@@ -1,9 +1,12 @@
 const AWS = require('aws-sdk');
 require('dotenv').config();
-var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
-AWS.config.credentials = credentials;
-AWS.config.credentials.sessionToken=process.env.AWS_SESSION_TOKEN;
-AWS.config.update({region: 'us-east-1'});
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: 'us-east-1'
+});
+
 const rekognition = new AWS.Rekognition();
 
 const getBinary = (image) => {

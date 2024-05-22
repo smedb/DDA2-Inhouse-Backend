@@ -2,7 +2,7 @@ const { compareFaces } = require('../services/awsRekognition');
 const { BIOMETRIC_VALIDATION_VERIFIED, BIOMETRIC_VALIDATION_INVALID } = require('./constants');
 
 const parseBiometricStatus = async (pictureIdPassport, pictureSelfie) => {
-    const rekognitionResult = await compareFaces(pictureIdPassport, pictureSelfie).then(val => val).catch(err => null);
+    const rekognitionResult = await compareFaces(pictureIdPassport, pictureSelfie).then(val => val).catch(err => console.log(err));
     if(!rekognitionResult || !rekognitionResult.FaceMatches) {
         console.log('There was an error trying to request Rekognition service');
         return {};

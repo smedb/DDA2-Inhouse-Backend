@@ -26,6 +26,32 @@
 			"response": []
 		},
 		{
+			"name": "List employees",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIucHJ1ZWJhMjAyMzFAY21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkUXdEU2E0SlVhQm1oU1YvelhKSDRvLkg1eWJHLi41NlJmUnlwMHFwd2lwYnh5ZXViVUtiYW0iLCJpYXQiOjE3MTYzOTk0NTIsImV4cCI6MTcxNjQwMzA1Mn0.pAfTXjnA0YQuDsSDG7OVjh6tvJiHYczkZA8AJoCebIY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/users/employee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"employee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create user",
 			"request": {
 				"method": "POST",

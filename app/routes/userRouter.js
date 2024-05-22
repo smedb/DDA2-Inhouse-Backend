@@ -24,5 +24,7 @@ routes.post("/users/employee", bodyPostEmployeeIsComplete, validate.validations,
 
 routes.post("/users/employee/login", bodyPostEmployeeLoginIsComplete, validate.validations, userController.loginEmployee);
 
+routes.get("/users/employee", validateToken, userController.getEmployees);
+
 
 module.exports = { userRouter: routes };

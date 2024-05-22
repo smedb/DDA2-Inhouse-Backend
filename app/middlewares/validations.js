@@ -7,9 +7,8 @@ exports.validate = {
       const data = matchedData(req);
 
       if (Object.keys(data).length !== Object.keys(req.body).length) {
-        return res.status(400).send({
-          status: 'error',
-          message: `The expected body fields are ${Object.keys(data).join(', ')}`,
+        result.errors.push({
+          msg: `The expected body fields are ${Object.keys(data).join(', ')}`,
         });
       }
       

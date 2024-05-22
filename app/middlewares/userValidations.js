@@ -32,13 +32,17 @@ exports.bodyPostUserIsComplete = [
       .exists()
       .withMessage('pictureSelfie field is empty.')
       .isString()
-      .withMessage('pictureSelfie field is not a string.'),
+      .withMessage('pictureSelfie field is not a string.')
+      .matches(/data:image/)
+      .withMessage('pictureSelfie should be a base 64 image.'),
 
     check('pictureIdPassport')
       .exists()
       .withMessage('pictureIdPassport field is empty.')
       .isString()
-      .withMessage('pictureIdPassport field is not a string.'),
+      .withMessage('pictureIdPassport field is not a string.')
+      .matches(/data:image/)
+      .withMessage('pictureIdPassport should be a base 64 image.'),,
 
     check('immovables')
       .exists()

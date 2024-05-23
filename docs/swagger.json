@@ -468,9 +468,6 @@
                                 "department": {
                                   "type": "string"
                                 },
-                                "age": {
-                                  "type": "number"
-                                },
                                 "state": {
                                   "type": "string"
                                 },
@@ -495,7 +492,6 @@
                                     "gender": "M",
                                     "monthlySalary": 10000.00,
                                     "department": "department",
-                                    "age": 50,
                                     "state": "state",
                                     "birthDate": "1970/05/31"
                                 },
@@ -507,7 +503,6 @@
                                     "gender": "M",
                                     "monthlySalary": 10000.00,
                                     "department": "department",
-                                    "age": 50,
                                     "state": "state",
                                     "birthDate": "1970/05/31"
                                 }
@@ -590,9 +585,6 @@
                           "department": {
                             "type": "string"
                           },
-                          "age": {
-                            "type": "number"
-                          },
                           "state": {
                             "type": "string"
                           },
@@ -617,7 +609,6 @@
                           "email": "user.prueba20345@cmail.com",
                           "monthlySalary": 10000,
                           "department": "department",
-                          "age": 50,
                           "state": "state",
                           "gender": "M",
                           "birthDate": "1970-05-31T03:00:00.000Z",
@@ -630,7 +621,6 @@
                           "email": "user.prueba20235@cmail.com",
                           "monthlySalary": 10000,
                           "department": "department",
-                          "age": 50,
                           "state": "state",
                           "gender": "M",
                           "birthDate": "1970-05-31T03:00:00.000Z",

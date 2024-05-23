@@ -130,12 +130,6 @@ exports.bodyPostEmployeeIsComplete = [
     .isString()
     .withMessage('department field is not a string.'),
 
-  check('users.*.age')
-    .exists()
-    .withMessage('age field is empty.')
-    .isInt()
-    .withMessage('age field is not an int.'),
-
   check('users.*.state')
     .exists()
     .withMessage('state field is empty.')

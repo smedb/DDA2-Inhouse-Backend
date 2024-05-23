@@ -97,10 +97,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: !isRequiredIfClient
     },
-    age: {
-        type: Number,
-        required: !isRequiredIfClient
-    },
     state: {
         type: String,
         required: !isRequiredIfClient

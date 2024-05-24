@@ -53,7 +53,15 @@ describe('Integration test /users POST', () => {
         email: 'johndoe@example.com',
         password: 'password123',
         approved: 'APPROVED'
-      })
+      });
+      userSchema.findOneAndDelete = jest.fn().mockResolvedValue({
+        _id: '507f191e810c19729de860eb',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        password: 'password123',
+        approved: 'APPROVED'
+      });
   });
 
   describe('Validations', () => {
@@ -1168,5 +1176,92 @@ describe('Integration tests /users/employee GET', () => {
         .send()
         .expect(200)
         .then(response => expect(response.body[0].firstName).toMatch('John'))}
+    );
+})
+
+describe('Integration tests /users/employee DELETE', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    userSchema.findOneAndDelete = jest.fn().mockResolvedValue({
+      _id: '507f191e810c19729de860eb',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'johndoe@example.com',
+      password: 'password123',
+      approved: 'APPROVED'
+    });
+});
+
+  it("Should fail because there is no token present", () =>
+    request(app)
+      .delete('/users/employee')
+      .send()
+      .expect(401)
+      .then(response => expect(response.body.message).toMatch('Unauthorized.'))
+  );
+
+  it("Should fail because email is null", () =>
+      request(app)
+          .delete('/users/employee')
+          .set({'Authorization': 'Token 1234567890'})
+          .send({})
+          .expect(400)
+          .then(response => expect(response.body.message).toMatch('email field is empty.'))
+    );
+    
+    it("Should fail because email is not a string", () =>
+      request(app)
+          .delete('/users/employee')
+          .set({'Authorization': 'Token 1234567890'})
+          .send({  
+            email: 1
+          })
+          .expect(400)
+          .then(response => expect(response.body.message).toMatch('email field is not a string.'))
+    );
+
+    it("Should fail because email is not an email", () =>
+      request(app)
+          .delete('/users/employee')
+          .set({'Authorization': 'Token 1234567890'})
+          .send({  
+            email: 'johndoesdf'
+          })
+          .expect(400)
+          .then(response => expect(response.body.message).toMatch('email field is not an email.'))
+    );
+
+  it("Should success updating an user", async () =>  {
+      jest.spyOn(userSchema, 'findOneAndDelete').mockResolvedValue(null);
+      return await request(app)
+          .delete('/users/employee')
+          .set({'Authorization': 'Token 1234567890'})
+          .send({
+            email: "user@user.com"
+          })
+          .expect(404)
+          .then(response => expect(response.body.message).toMatch('User not found'));
+    });
+  it("Should success deleting user", async () => {
+    userSchema.findOneAndDelete = jest.fn().mockResolvedValue({  
+        _id: '507f191e810c19729de860ea',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@example.com',
+        monthlySalary: 123123,
+        department: 'mock',
+        state: 'mock',
+        age: 45,
+        gender: 'M',
+        birthDate: '1970-05-31T03:00:00.000Z'
+    });
+    return await request(app)
+        .delete('/users/employee')
+        .set({'Authorization': 'Token 1234567890'})
+        .send({email: 'johndoe@example.com',})
+        .expect(200)
+        .then(response => expect(response.body.email).toMatch('johndoe@example.com'))}
     );
 })

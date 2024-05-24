@@ -88,7 +88,7 @@ const getEmployees = async (req, res, next) =>
     .catch(error => res.status(500).send({message: error.message}));
 
 const deleteUser = async (req, res, next) => 
-    userSchema.findOneAndDelete({ email: req.body.email, segment: USER_SEGMENT_EMPLOYEE},)
+    userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE},)
         .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
         .then(data => res.status(200).send({email: data.email}))
         .catch(error => res.status(error.status || 500).send({message: error.message}));

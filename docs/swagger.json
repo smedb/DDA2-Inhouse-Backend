@@ -635,6 +635,70 @@
                 }
               }
             }
+          },
+          "delete": {
+            "summary": "Deletes an employee",
+            "description": "Will delete the employee by email",
+            "tags": ["Users"],
+            "security": [
+              {
+                "JWT": []
+              }
+            ],
+            "parameters": [
+              {
+                "name": "Authorization",
+                "in": "headers",
+                "description": "Token from login",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "example": "eyJhbGciOiJIUzI1NiIsI..."
+              }
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties":{
+                        "users": {
+                          "type": "object",
+                          "properties": {
+                            "email": {
+                                "type": "string"
+                              }
+                            }
+                        }
+                      },
+                          "example": {
+                            "email": "user.prueba20235@cmail.com"
+                        }
+                      }
+                  }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Return the deleted employee email",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": 
+                      { "email": "user.prueba21@cmail.com"}
+                  }
+                }
+              }
+            }
           }
         },
         "/users/employee/login": {
@@ -677,12 +741,16 @@
                           },
                           "token": {
                             "type": "string"
+                          },
+                          "department": {
+                            "type": "string"
                           }
                       }
                     },
                     "example": { 
                       "email": "user.prueba21@cmail.com", 
-                      "token": "tokenmock"
+                      "token": "tokenmock",
+                      "department": "admin"
                     }
                   }
                 }

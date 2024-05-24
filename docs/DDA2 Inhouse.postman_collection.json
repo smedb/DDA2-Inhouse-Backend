@@ -218,6 +218,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete employee",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIucHJ1ZWJhN0BjbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRjUmY2SE5GdjhPajVXL0FOS3V2eFB1WHpaVXVZQ3hDVHVxdEprL29SdlhLQmNJM0xuMHZBLiIsImlhdCI6MTcxNjUyNDkzMywiZXhwIjoxNzE2NTI4NTMzfQ.ML2ZZjBNJqUPca0j1l1yIDLskl-YIx1i4DvIc0gOV8o",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"email\": \"user.todelete1@cmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/users/employee",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"users",
+						"employee"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

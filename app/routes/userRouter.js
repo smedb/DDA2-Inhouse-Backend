@@ -5,7 +5,8 @@ const {
     bodyPostUserIsComplete, 
     bodyPutUserIsComplete, 
     bodyPostEmployeeLoginIsComplete, 
-    bodyPostEmployeeIsComplete } = require('../middlewares/userValidations');
+    bodyPostEmployeeIsComplete,
+    bodyDeleteEmployeeIsComplete } = require('../middlewares/userValidations');
 const { validate } = require('../middlewares/validations');
 const { validateToken } = require('../middlewares/validateToken');
 
@@ -25,6 +26,8 @@ routes.post("/users/employee", bodyPostEmployeeIsComplete, validate.validations,
 routes.post("/users/employee/login", bodyPostEmployeeLoginIsComplete, validate.validations, userController.loginEmployee);
 
 routes.get("/users/employee", validateToken, userController.getEmployees);
+
+routes.delete("/users/employee", bodyDeleteEmployeeIsComplete, validateToken, validate.validations, userController.deleteUser);
 
 
 module.exports = { userRouter: routes };

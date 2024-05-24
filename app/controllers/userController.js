@@ -74,7 +74,7 @@ const loginEmployee = async (req, res, next) =>
                             process.env.TOKEN_SECRET, 
                             { expiresIn: '1h' }
                     );
-                    return res.status(200).send({email: data.email, token })
+                    return res.status(200).send({email: data.email, token, department: data.department })
                 });
         })
         .catch(error => res.status(500).send({message: error.message}));
@@ -87,4 +87,18 @@ const getEmployees = async (req, res, next) =>
     .then(data => res.status(200).send(data))
     .catch(error => res.status(500).send({message: error.message}));
 
-module.exports = { create, getUsers, updateUser, createEmployee, loginEmployee, getEmployees }
+const deleteUser = async (req, res, next) => 
+    userSchema.findOneAndDelete({ email: req.body.email, segment: USER_SEGMENT_EMPLOYEE},)
+        .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
+        .then(data => res.status(200).send({email: data.email}))
+        .catch(error => res.status(error.status || 500).send({message: error.message}));
+
+module.exports = { 
+    create, 
+    getUsers, 
+    updateUser, 
+    createEmployee, 
+    loginEmployee, 
+    getEmployees,
+    deleteUser
+ }

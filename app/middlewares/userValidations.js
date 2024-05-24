@@ -168,3 +168,13 @@ exports.bodyPostEmployeeLoginIsComplete = [
     .isString()
     .withMessage('password field is not a string.')
 ];
+
+exports.bodyDeleteEmployeeIsComplete = [
+  check('email')
+    .exists()
+    .withMessage('email field is empty.')
+    .isString()
+    .withMessage('email field is not a string.')
+    .isEmail()
+    .withMessage('email field is not an email.')
+]

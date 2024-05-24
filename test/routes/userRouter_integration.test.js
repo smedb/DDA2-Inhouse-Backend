@@ -825,41 +825,6 @@ describe('Validations', () => {
       .then(response => expect(response.body.message).toMatch('department field is not a string.'))
     );
 
-  it("Should fail because age is null", () =>
-    request(app)
-      .post('/users/employee')
-      .send({  
-        users: [{
-          firstName: 'John',
-          lastName: 'lastName',
-          email: 'johndoe@example.com',
-          password: 'password123',
-          monthlySalary: 1000.0,
-          department: '123'
-        }]
-      })
-      .expect(400)
-      .then(response => expect(response.body.message).toMatch('age field is empty.'))
-  );
-
-  it("Should fail because age is not a number", () =>
-    request(app)
-      .post('/users/employee')
-      .send({  
-        users: [{
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'johndoe@example.com',
-          password: '12313',
-          monthlySalary: 1000.0,
-          department: '1212',
-          age: 'asdad'
-        }]
-      })
-      .expect(400)
-      .then(response => expect(response.body.message).toMatch('age field is not an int.'))
-    );
-
   it("Should fail because state is null", () =>
     request(app)
       .post('/users/employee')
@@ -889,7 +854,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: 1
         }]
       })
@@ -908,7 +872,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: 'california'
         }]
       })
@@ -927,7 +890,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: '1',
           gender: 1
         }]
@@ -947,7 +909,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: '1',
           gender: 'J'
         }]
@@ -967,7 +928,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: 'california',
           gender: 'M'
         }]
@@ -987,7 +947,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: '1',
           gender: 'M',
           birthDate: 'a'
@@ -1008,7 +967,6 @@ describe('Validations', () => {
           password: 'password123',
           monthlySalary: 1000.0,
           department: '1212',
-          age: 30,
           state: '1',
           gender: 'M',
           birthDate: '1980/09/12'
@@ -1029,7 +987,6 @@ describe('Validations', () => {
         password: 'password123',
         monthlySalary: 1000.0,
         department: '1212',
-        age: 30,
         state: '1',
         gender: 'M',
         birthDate: '1980/05/11'
@@ -1042,7 +999,6 @@ describe('Validations', () => {
       password: 'password123',
       monthlySalary: 1000.0,
       department: '1212',
-      age: 30,
       state: '1',
       gender: 'M',
       birthDate: '1980/05/11'

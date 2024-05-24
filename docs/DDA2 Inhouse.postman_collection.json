@@ -1,22 +1,59 @@
 {
 	"info": {
-		"_postman_id": "fd952059-079a-42cf-a4b1-e83f79632970",
-		"name": "DDA2 Inhouse Local",
+		"_postman_id": "f504a0ea-32f1-4b56-bea1-324b56223551",
+		"name": "DDA2 Inhouse",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
+			"name": "Approve user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"approved\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/users/6644313c77479c1546b55112",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"users",
+						"6644313c77479c1546b55112"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "List unapproved users",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIucHJ1ZWJhMUBjbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRadXBQLjV5T3dYNG9zWDFQSXo2TkJlRmgyczVON1VlWldjM2h1YjZSRjAxdmRMTmVySGhTZSIsImlhdCI6MTcxNjQxOTIwNywiZXhwIjoxNzE2NDIyODA3fQ.8xbg3HwWPsyhn8mm_fLMfroLVqPyRPBkK8wiiI8Rby0",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8080/users/unapproved",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users/unapproved",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users",
 						"unapproved"
@@ -37,12 +74,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/users/employee",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users/employee",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users",
 						"employee"
@@ -66,12 +101,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users"
 					]
@@ -94,12 +127,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users"
 					]
@@ -122,12 +153,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users"
 					]
@@ -142,7 +171,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"users\": [\n    {\n        \"email\": \"user.prueba20231@cmail.com\",\n        \"firstName\": \"uer1\",\n        \"lastName\": \"perez\",\n        \"password\": \"asdasd3\",\n        \"gender\": \"M\",\n        \"monthlySalary\": 10000.00,\n        \"department\": \"department\",\n        \"age\": 50,\n        \"state\": \"state\",\n        \"birthDate\": \"1970/05/31\"\n    },\n    {\n        \"email\": \"user.prueba2034@cmail.com\",\n        \"firstName\": \"uer1\",\n        \"lastName\": \"perez\",\n        \"password\": \"asdasd4\",\n        \"gender\": \"M\",\n        \"monthlySalary\": 10000.00,\n        \"department\": \"department\",\n        \"age\": 50,\n        \"state\": \"state\",\n        \"birthDate\": \"1970/05/31\"\n    }\n]}",
+					"raw": "{\n    \"users\": [\n    {\n        \"email\": \"user.prueba7@cmail.com\",\n        \"firstName\": \"uer1\",\n        \"lastName\": \"perez\",\n        \"password\": \"asdasd3\",\n        \"gender\": \"M\",\n        \"monthlySalary\": 10000.00,\n        \"department\": \"department\",\n        \"state\": \"state\",\n        \"birthDate\": \"1970/05/31\"\n    },\n    {\n        \"email\": \"user.prueba8@cmail.com\",\n        \"firstName\": \"uer1\",\n        \"lastName\": \"perez\",\n        \"password\": \"asdasd4\",\n        \"gender\": \"M\",\n        \"monthlySalary\": 10000.00,\n        \"department\": \"department\",\n        \"state\": \"state\",\n        \"birthDate\": \"1970/05/31\"\n    }\n]}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -150,12 +179,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/employee",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users/employee",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users",
 						"employee"
@@ -179,45 +206,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/employee/login",
-					"protocol": "http",
+					"raw": "{{apiUrl}}/users/employee/login",
 					"host": [
-						"localhost"
+						"{{apiUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"users",
 						"employee",
 						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Approve user",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"approved\": true\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users/6644313c77479c1546b55112",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"6644313c77479c1546b55112"
 					]
 				}
 			},

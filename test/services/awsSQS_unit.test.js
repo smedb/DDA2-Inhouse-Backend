@@ -7,7 +7,7 @@ jest.mock('aws-sdk', () => {
   const mSQS = {
     sendMessage: jest.fn().mockReturnThis(),
     promise: jest.fn(),
-    receiveSQSEvent: jest.fn().mockReturnThis(),
+    receiveMessage: jest.fn().mockReturnThis(),
     deleteMessage: jest.fn().mockReturnThis(),
   };
   return {
@@ -64,25 +64,25 @@ describe('SQS Module Tests', () => {
       save: jest.fn().mockResolvedValueOnce({ email: 'test@example.com' })
     }));
 
-    await mSQSInstance.receiveSQSEvent();
+    await receiveSQSEvent();
 
-    expect(mSQSInstance.receiveSQSEvent).toHaveBeenCalled();
+    expect(mSQSInstance.promise).toHaveBeenCalled();
   });
 
   test('receiveSQSEvent handles no messages in the queue', async () => {
     mSQSInstance.promise.mockResolvedValueOnce({});
 
-    await mSQSInstance.receiveSQSEvent();
+    await receiveSQSEvent();
 
-    expect(mSQSInstance.receiveSQSEvent).toHaveBeenCalled();
+    expect(mSQSInstance.promise).toHaveBeenCalled();
   });
 
   test('receiveSQSEvent handles errors', async () => {
     const errorMessage = 'Error al recibir mensajes de SQS';
     mSQSInstance.promise.mockRejectedValueOnce(new Error(errorMessage));
 
-    await mSQSInstance.receiveSQSEvent();
+    await receiveSQSEvent();
 
-    expect(mSQSInstance.receiveSQSEvent).toHaveBeenCalled();
+    expect(mSQSInstance.promise).toHaveBeenCalled();
   });
 });

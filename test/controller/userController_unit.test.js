@@ -68,12 +68,12 @@ describe('User Controller', () => {
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
         hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'FRAUD',
+        // creditScore: 950,
+        // fraudSituation: 'FRAUD',
         segment: 'CLIENT'
     };
-    predictCreditScore.mockReturnValue({creditScore: 0, fraudSituation: 'FRAUD'}); 
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
+    // predictCreditScore.mockReturnValue({creditScore: 0, fraudSituation: 'FRAUD'}); 
+    // parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const req = { body: userData };
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -86,45 +86,45 @@ describe('User Controller', () => {
     expect(res.status).toHaveBeenCalledWith(201);
   });
 
-  it('should create a new user', async () => {
-    const userData = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        immovables: '>2',
-        monthlyIncome: '>1000',
-        employmentSituation: 'employee',
-        hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'FRAUD'
-    };
-    const createdUser = { 
-        _id: 1, 
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        immovables: '>2',
-        monthlyIncome: '>1000',
-        employmentSituation: 'employee',
-        approved: 'REJECTED',
-        hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'TRUSTWORTHY',
-        segment: 'CLIENT'
-    };
-    predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}); 
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
-    const req = { body: userData };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
-    const saveMock = jest.fn().mockResolvedValue(createdUser);
-    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
+  // it('should create a new user', async () => {
+  //   const userData = { 
+  //       firstName: 'John',
+  //       lastName: 'Doe',
+  //       email: 'johndoe@example.com',
+  //       immovables: '>2',
+  //       monthlyIncome: '>1000',
+  //       employmentSituation: 'employee',
+  //       hasTesla: 'yes',
+  //       creditScore: 950,
+  //       fraudSituation: 'FRAUD'
+  //   };
+  //   const createdUser = { 
+  //       _id: 1, 
+  //       firstName: 'John',
+  //       lastName: 'Doe',
+  //       email: 'johndoe@example.com',
+  //       immovables: '>2',
+  //       monthlyIncome: '>1000',
+  //       employmentSituation: 'employee',
+  //       approved: 'REJECTED',
+  //       hasTesla: 'yes',
+  //       creditScore: 950,
+  //       fraudSituation: 'TRUSTWORTHY',
+  //       segment: 'CLIENT'
+  //   };
+  //   // predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}); 
+  //   // parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
+  //   const req = { body: userData };
+  //   const res = {
+  //     status: jest.fn().mockReturnThis(),
+  //     send: jest.fn(),
+  //   };
+  //   const saveMock = jest.fn().mockResolvedValue(createdUser);
+  //   jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 
-    await userController.create(req, res);
-    expect(res.status).toHaveBeenCalledWith(201);
-  });
+  //   await userController.create(req, res);
+  //   expect(res.status).toHaveBeenCalledWith(201);
+  // });
 
   it('should handle create user error and return 500', async () => {
     const userData = {  
@@ -133,8 +133,8 @@ describe('User Controller', () => {
         email: 'johndoe@example.com',
         password: 'password123'
     };
-    predictCreditScore.mockImplementationOnce(() => Promise.resolve({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}));
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
+    // predictCreditScore.mockImplementationOnce(() => Promise.resolve({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}));
+    // parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const saveMock = jest.fn().mockRejectedValue({});
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 

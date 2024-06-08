@@ -491,8 +491,8 @@ describe('Integration test /users POST', () => {
         employmentSituation: 'employee',
         hasTesla: 'yes'
       };
-      predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
-      parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
+      // predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'FRAUD'}); 
+      // parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
       const saveMock = jest.fn().mockResolvedValue(createdUser);
       jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
       return await request(app)

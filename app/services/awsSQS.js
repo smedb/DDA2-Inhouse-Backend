@@ -47,5 +47,6 @@ const receiveSQSEvent = () =>
 setInterval(receiveSQSEvent, 5000);
 
 module.exports = {
-    sendSQSEvent
+    sendSQSEvent,
+    receiveSQSEvent
 }

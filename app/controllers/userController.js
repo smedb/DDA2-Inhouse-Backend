@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cron = require('node-cron');
 const userSchema = require('../models/user');
 const {
     CREDIT_SCORE_VALIDATION, 
@@ -8,18 +9,36 @@ const {
     APPROVED_STATUS_APPROVED,
     APPROVED_STATUS_REJECTED,
     USER_SEGMENT_EMPLOYEE,
-    USER_SEGMENT_CLIENT
+    USER_SEGMENT_CLIENT,
+    AWS_CREATE_USER_CLIENT_SQS_MESSAGE,
+    AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE,
+    AWS_DELETE_USER_EMPLOYEE_SQS_MESSAGE
 } = require('../helpers/constants');
 const { userBuilderOrchestrator } = require('../helpers/userHelper');
+const { sendSQSEvent } = require('../services/awsSQS');
 
-const create = async (req, res, next) => {
-    const user = userSchema({
-        ...await userBuilderOrchestrator(req.body)
-    });
-    return await user.save()
+const create = async (req, res, next) =>
+    userSchema(req.body).save()
         .then(data => res.status(201).send(data))
         .catch(error => res.status(500).send({message: error.message}));
-}
+
+cron.schedule('*/1 * * * *', async () => {
+    await userSchema.find({ 
+        approved: APPROVED_STATUS_PENDING,
+        fraudSituation: { $exists: false },
+        segment: USER_SEGMENT_CLIENT
+    })
+    .then(data => Promise.all(data.map(async currentUser => {
+            const completeUser = await userBuilderOrchestrator(JSON.parse(JSON.stringify(currentUser)));
+            return await userSchema.findOneAndUpdate({ _id: currentUser._id}, { 
+                    ...completeUser
+            }, { new: true })
+            .then(updatedUser => sendSQSEvent({email: updatedUser.email, status: updatedUser.status}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE))
+            .catch(error =>console.log(error))
+        }))
+    );
+    console.log('Cron running every one minute');
+  });
 
 const getUsers = async (req, res, next) => 
     userSchema.find({ 
@@ -50,6 +69,10 @@ const createEmployee = async (req, res, next) =>
         });
         return user.save();
     }))
+    .then(users => Promise.all(users.map(async usr => {
+        await sendSQSEvent({email: usr.email}, AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE);
+        return usr;
+    })))
     .then(users => res.status(201).send(users.map(usr => ({email: usr.email}))))
     .catch(error => res.status(500).send({message: error.message}));
 
@@ -88,8 +111,12 @@ const getEmployees = async (req, res, next) =>
     .catch(error => res.status(500).send({message: error.message}));
 
 const deleteUser = async (req, res, next) => 
-    userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE},)
+    userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE})
         .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
+        .then(async data => {
+            await sendSQSEvent({email: data.email},AWS_DELETE_USER_EMPLOYEE_SQS_MESSAGE);
+            return data;
+        })
         .then(data => res.status(200).send({email: data.email}))
         .catch(error => res.status(error.status || 500).send({message: error.message}));
 

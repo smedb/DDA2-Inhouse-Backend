@@ -1,6 +1,7 @@
 const userController = require('../../app/controllers/userController');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
 const { parseBiometricStatus } = require('../../app/helpers/rekognitionHelper');
+const { sendSQSEvent } = require('../../app/services/awsSQS');
 const userSchema = require('../../app/models/user');
 
   jest.mock('../../app/helpers/creditScoreHelper', () => ({
@@ -15,6 +16,10 @@ const userSchema = require('../../app/models/user');
         verified: 'VERIFIED',
       }),
     }));
+    
+  jest.mock('../../app/services/awsSQS', () => ({
+    sendSQSEvent: jest.fn().mockReturnValue({}),
+  }));
 
 describe('User Controller', () => {
 
@@ -68,52 +73,8 @@ describe('User Controller', () => {
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
         hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'FRAUD',
         segment: 'CLIENT'
     };
-    predictCreditScore.mockReturnValue({creditScore: 0, fraudSituation: 'FRAUD'}); 
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
-    const req = { body: userData };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
-    const saveMock = jest.fn().mockResolvedValue(createdUser);
-    jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
-
-    await userController.create(req, res);
-    expect(res.status).toHaveBeenCalledWith(201);
-  });
-
-  it('should create a new user', async () => {
-    const userData = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        immovables: '>2',
-        monthlyIncome: '>1000',
-        employmentSituation: 'employee',
-        hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'FRAUD'
-    };
-    const createdUser = { 
-        _id: 1, 
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@example.com',
-        immovables: '>2',
-        monthlyIncome: '>1000',
-        employmentSituation: 'employee',
-        approved: 'REJECTED',
-        hasTesla: 'yes',
-        creditScore: 950,
-        fraudSituation: 'TRUSTWORTHY',
-        segment: 'CLIENT'
-    };
-    predictCreditScore.mockReturnValue({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}); 
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const req = { body: userData };
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -133,8 +94,6 @@ describe('User Controller', () => {
         email: 'johndoe@example.com',
         password: 'password123'
     };
-    predictCreditScore.mockImplementationOnce(() => Promise.resolve({creditScore: 950, fraudSituation: 'TRUSTWORTHY'}));
-    parseBiometricStatus.mockReturnValue({verified: 'VERIFIED'}); 
     const saveMock = jest.fn().mockRejectedValue({});
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 
@@ -330,6 +289,7 @@ describe('User Controller', () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
+    sendSQSEvent.mockImplementationOnce(() => Promise.resolve());
     const saveMock = jest.fn().mockResolvedValue(createdUser);
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 

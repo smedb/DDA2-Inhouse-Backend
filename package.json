@@ -30,6 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "mockingoose": "^2.16.2",
     "mongoose": "^7.6.2",
+    "node-cron": "^3.0.3",
     "supertest": "^4.0.2",
     "swagger-ui-express": "^5.0.0",
     "text-encoding": "^0.7.0",

@@ -17,7 +17,7 @@ const sendSQSEvent = (data, message) =>
             data
         }),
         QueueUrl: process.env.AWS_SQS_QUEUE
-      }).promise();
+      }).promise().then(() => console.log(`Sent message ${message} to queue with the following data: ${JSON.stringify(data)}`));
 
 const receiveSQSEvent = () =>
     sqs.receiveMessage({
@@ -30,7 +30,7 @@ const receiveSQSEvent = () =>
         if(!data.Messages) {
             console.log('No hay mensajes en la cola');
         }
-        data.Messages.forEach( message => {
+        data.Messages.filter(msg => msg.operationType == 'CreateUser').forEach( message => {
             console.log('Mensaje recibido:', message?.Body);
             userSchema(message?.Body).save()
                 .then(data => console.log('Created user', message?.Body?.email))

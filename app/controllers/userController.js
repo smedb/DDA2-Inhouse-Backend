@@ -10,7 +10,9 @@ const {
     APPROVED_STATUS_REJECTED,
     USER_SEGMENT_EMPLOYEE,
     USER_SEGMENT_CLIENT,
-    AWS_CREATE_USER_SQS_MESSAGE
+    AWS_CREATE_USER_CLIENT_SQS_MESSAGE,
+    AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE,
+    AWS_DELETE_USER_EMPLOYEE_SQS_MESSAGE
 } = require('../helpers/constants');
 const { userBuilderOrchestrator } = require('../helpers/userHelper');
 const { sendSQSEvent } = require('../services/awsSQS');
@@ -31,7 +33,7 @@ cron.schedule('*/1 * * * *', async () => {
             return await userSchema.findOneAndUpdate({ _id: currentUser._id}, { 
                     ...completeUser
             }, { new: true })
-            .then(updatedUser => sendSQSEvent({data: updatedUser.email, message: AWS_CREATE_USER_SQS_MESSAGE}))
+            .then(updatedUser => sendSQSEvent({email: updatedUser.email, status: updatedUser.status}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE))
             .catch(error =>console.log(error))
         }))
     );
@@ -68,7 +70,7 @@ const createEmployee = async (req, res, next) =>
         return user.save();
     }))
     .then(users => Promise.all(users.map(async usr => {
-        await sendSQSEvent(usr);
+        await sendSQSEvent({email: usr.email}, AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE);
         return usr;
     })))
     .then(users => res.status(201).send(users.map(usr => ({email: usr.email}))))
@@ -109,8 +111,12 @@ const getEmployees = async (req, res, next) =>
     .catch(error => res.status(500).send({message: error.message}));
 
 const deleteUser = async (req, res, next) => 
-    userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE},)
+    userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE})
         .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
+        .then(async data => {
+            await sendSQSEvent({email: data.email},AWS_DELETE_USER_EMPLOYEE_SQS_MESSAGE);
+            return data;
+        })
         .then(data => res.status(200).send({email: data.email}))
         .catch(error => res.status(error.status || 500).send({message: error.message}));
 

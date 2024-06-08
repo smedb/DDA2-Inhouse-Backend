@@ -22,7 +22,6 @@ const predictCreditScore = (userData) => {
             });
             console.log(mappedData)
     const prediction = predictMLCreditScore(mappedData);
-    console.log("🚀 ~ predictCreditScore ~ prediction:", prediction)
     if( typeof prediction != 'number') {
         throw new Error({ message: 'The given data can not be predicted'})
     }

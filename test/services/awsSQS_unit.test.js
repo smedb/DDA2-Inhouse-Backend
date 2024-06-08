@@ -58,7 +58,7 @@ describe('SQS Module Tests', () => {
 
     mSQSInstance.promise
       .mockResolvedValueOnce(mockMessages)
-      .mockResolvedValueOnce('success');
+    //   .mockResolvedValueOnce('success');
 
     userSchema.mockImplementation(() => ({
       save: jest.fn().mockResolvedValueOnce({ email: 'test@example.com' })

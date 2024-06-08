@@ -29,18 +29,19 @@ const receiveSQSEvent = () =>
     .then(data => {
         if(!data.Messages) {
             console.log('No hay mensajes en la cola');
-        }
-        data.Messages.filter(msg => msg.operationType == 'CreateUser').forEach( message => {
-            console.log('Mensaje recibido:', message?.Body);
-            userSchema(message?.Body).save()
-                .then(data => console.log('Created user', message?.Body?.email))
-            return sqs.deleteMessage({
-                QueueUrl: process.env.AWS_WALLET_SQS_QUEUE,
-                ReceiptHandle: message.ReceiptHandle
+        } else {
+            data.Messages.filter(msg => msg?.Body?.operationType == 'CreateUser').forEach( message => {
+                console.log('Mensaje recibido:', message?.Body);
+                userSchema(message?.Body.data).save()
+                    .then(data => console.log('Created user', data.email))
+                return sqs.deleteMessage({
+                    QueueUrl: process.env.AWS_WALLET_SQS_QUEUE,
+                    ReceiptHandle: message.ReceiptHandle
+                })
+                .promise()
+                .then(() => console.log('Mensaje eliminado'));
             })
-            .promise()
-            .then(() => console.log('Mensaje eliminado'));
-        })
+        }
     })
     .catch(error => console.error('Error al recibir mensajes de SQS', error));
 

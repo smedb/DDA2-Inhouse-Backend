@@ -30,9 +30,10 @@ const receiveSQSEvent = () =>
         if(!data.Messages) {
             console.log('No hay mensajes en la cola');
         } else {
-            data.Messages.filter(msg => msg?.Body?.operationType == 'CreateUser').forEach( message => {
-                console.log('Mensaje recibido:', message?.Body);
-                userSchema(message?.Body.data).save()
+            data.Messages.filter(msg => JSON.parse(msg?.Body).operationType == 'CreateUser').forEach( message => {
+                const payload = JSON.parse(message?.Body);
+                console.log('Mensaje recibido:', payload);
+                userSchema(payload.data).save()
                     .then(data => console.log('Created user', data.email))
                 return sqs.deleteMessage({
                     QueueUrl: process.env.AWS_WALLET_SQS_QUEUE,

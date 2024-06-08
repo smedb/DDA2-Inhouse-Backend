@@ -46,11 +46,14 @@ describe('SQS Module Tests', () => {
     expect(mSQSInstance.promise).toHaveBeenCalled();
   });
 
-  test('receiveSQSEvent receives messages from SQS', async () => {
+  it('receiveSQSEvent receives messages from SQS', async () => {
     const mockMessages = {
       Messages: [
         {
-          Body: JSON.stringify({ operationType: 'CreateUser', email: 'test@example.com' }),
+          Body: JSON.stringify({
+                operationType: 'CreateUser',
+                data: { email: 'test@example.com' }
+            }),
           ReceiptHandle: 'mockReceiptHandle'
         }
       ]
@@ -58,7 +61,7 @@ describe('SQS Module Tests', () => {
 
     mSQSInstance.promise
       .mockResolvedValueOnce(mockMessages)
-    //   .mockResolvedValueOnce('success');
+      .mockResolvedValueOnce('success');
 
     userSchema.mockImplementation(() => ({
       save: jest.fn().mockResolvedValueOnce({ email: 'test@example.com' })

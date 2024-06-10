@@ -185,7 +185,7 @@ describe('Integration test /users POST', () => {
         .then(response => expect(response.body.message).toMatch('pictureSelfie field is not a string.'))
     );
 
-    it("Should fail because pictureSelfie is not a base 64 img", () =>
+    it("Should fail because pictureSelfie is not a s3 bucket img", () =>
     request(app)
       .post('/users')
       .send({  
@@ -196,7 +196,7 @@ describe('Integration test /users POST', () => {
         pictureSelfie: "iVBORw0KGgoAAAANSUhEUgAAA..."
       })
       .expect(400)
-      .then(response => expect(response.body.message).toMatch('pictureSelfie should be a base 64 image.'))
+      .then(response => expect(response.body.message).toMatch('pictureSelfie should be a s3 bucket image.'))
   );
 
   it("Should fail because pictureIdPassport is null", () =>
@@ -206,7 +206,7 @@ describe('Integration test /users POST', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         password: "12313",
       })
       .expect(400)
@@ -221,14 +221,14 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           pictureIdPassport: 12313
         })
         .expect(400)
         .then(response => expect(response.body.message).toMatch('pictureIdPassport field is not a string.'))
     );
 
-  it("Should fail because pictureIdPassport is not a base 64 img", () =>
+  it("Should fail because pictureIdPassport is not a s3 bucket img", () =>
     request(app)
       .post('/users')
       .send({  
@@ -236,11 +236,11 @@ describe('Integration test /users POST', () => {
         lastName: 'Doe',
         email: 'johndoe@example.com',
         password: "12313",
-        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         pictureIdPassport: "iVBORw0KGgoAAAANSUhEUgAAA..."
       })
       .expect(400)
-      .then(response => expect(response.body.message).toMatch('pictureIdPassport should be a base 64 image.'))
+      .then(response => expect(response.body.message).toMatch('pictureIdPassport should be a s3 bucket image.'))
   );
 
     it("Should fail because immovables is empty", () =>
@@ -251,8 +251,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         })
         .expect(400)
         .then(response => expect(response.body.message).toMatch('immovables field is empty.'))
@@ -266,8 +266,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: 1
         })
         .expect(400)
@@ -282,8 +282,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '0-2'
         })
         .expect(400)
@@ -298,8 +298,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2'
         })
         .expect(400)
@@ -314,8 +314,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: 123132
         })
@@ -331,8 +331,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>500'
         })
@@ -349,8 +349,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000'
         })
@@ -366,8 +366,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 1
@@ -384,8 +384,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employed'
@@ -402,8 +402,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee'
@@ -420,8 +420,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -439,8 +439,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -458,8 +458,8 @@ describe('Integration test /users POST', () => {
           lastName: 'Doe',
           email: 'johndoe@example.com',
           password: "12313",
-          pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-          pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+          pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
           immovables: '1-2',
           monthlyIncome: '>1000',
           employmentSituation: 'employee',
@@ -477,8 +477,8 @@ describe('Integration test /users POST', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-        pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',
@@ -488,8 +488,8 @@ describe('Integration test /users POST', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@example.com',
-        pictureSelfie: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
-        pictureIdPassport: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureSelfie: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
+        pictureIdPassport: "s3.amazonaws.com/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...",
         immovables: '>2',
         monthlyIncome: '>1000',
         employmentSituation: 'employee',

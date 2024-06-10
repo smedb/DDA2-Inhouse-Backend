@@ -9,14 +9,11 @@ const { predictCreditScore } = require('../helpers/creditScoreHelper');
 const { parseBiometricStatus } = require('../helpers/rekognitionHelper');
 
 const userBuilderOrchestrator = async (userData) => {
-    console.log("hola")
-    console.log(await parseBiometricStatus(userData.pictureIdPassport, userData.pictureSelfie))
     const user = {
         ...userData,
         ...predictCreditScore(userData),
         ...await parseBiometricStatus(userData.pictureIdPassport, userData.pictureSelfie)
     }
-    console.log(user)
     if(user.fraudSituation == CREDIT_SCORE_VALIDATION_FRAUD) {
         user.approved = APPROVED_STATUS_REJECTED;
     } else if(user.verified == BIOMETRIC_VALIDATION_VERIFIED && 

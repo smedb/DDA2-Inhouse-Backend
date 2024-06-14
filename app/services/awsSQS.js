@@ -1,3 +1,4 @@
+const logger = require('../../logger');
 const AWS = require('aws-sdk');
 require('dotenv').config();
 const userSchema = require('../models/user');
@@ -17,7 +18,7 @@ const sendSQSEvent = (data, message) =>
             data
         }),
         QueueUrl: process.env.AWS_SQS_QUEUE
-      }).promise().then(() => console.log(`Sent message ${message} to queue with the following data: ${JSON.stringify(data)}`));
+      }).promise().then(() => logger.info(`Sent message ${message} to queue with the following data: ${JSON.stringify(data)}`));
 
 const receiveSQSEvent = () =>
     sqs.receiveMessage({
@@ -28,14 +29,14 @@ const receiveSQSEvent = () =>
     .promise()
     .then(data => {
         if(!data.Messages) {
-            console.log('No hay mensajes en la cola');
+            logger.info('No hay mensajes en la cola');
         } else {
             data.Messages.filter(msg => JSON.parse(msg?.Body).operationType == 'CreateUser').forEach( message => {
                 const payload = JSON.parse(message?.Body);
-                console.log('Mensaje recibido:', payload);
+                logger.info(`Mensaje recibido: ${JSON.stringify(payload)}`);
                 userSchema(payload.data).save()
-                    .then(data => console.log('Created user', data.email))
-                    .catch(err => console.log('Error al crear el usuario:', err))
+                    .then(data => logger.info('Created user', data.email))
+                    .catch(err => logger.info('Error al crear el usuario:', err))
             })
         }
     })

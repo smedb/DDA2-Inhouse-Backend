@@ -1,10 +1,11 @@
+const logger = require('../../logger');
 const { compareFaces } = require('../services/awsRekognition');
 const { BIOMETRIC_VALIDATION_VERIFIED, BIOMETRIC_VALIDATION_INVALID } = require('./constants');
 
 const parseBiometricStatus = async (pictureIdPassport, pictureSelfie) => {
-    const rekognitionResult = await compareFaces(pictureIdPassport, pictureSelfie).then(val => val).catch(err => console.log(err));
+    const rekognitionResult = await compareFaces(pictureIdPassport, pictureSelfie).then(val => val).catch(err => logger.info(err));
     if(!rekognitionResult || !rekognitionResult.FaceMatches) {
-        console.log('There was an error trying to request Rekognition service');
+        logger.info('There was an error trying to request Rekognition service');
         return {};
     }
     const trustLevel = rekognitionResult.FaceMatches.length > 0 ? 

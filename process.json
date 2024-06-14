@@ -1,0 +1,8 @@
+{
+    "watch": ["server", "client"],
+    "ignore_watch" : ["node_modules", "logs"],
+    "watch_delay": 1000,
+    "watch_options": {
+      "followSymlinks": false
+    }
+  }

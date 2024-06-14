@@ -1,3 +1,4 @@
+const logger = require('../../logger');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cron = require('node-cron');
@@ -33,14 +34,14 @@ cron.schedule('*/1 * * * *', async () => {
             return await userSchema.findOneAndUpdate({ _id: currentUser._id}, { 
                     ...completeUser
             }, { new: true })
-            .catch(error =>console.log(error))
+            .catch(error =>logger.info(error))
         }))
     ).then(users => Promise.all(
         users.filter(usr=> usr.approved != APPROVED_STATUS_PENDING)
             .map(approvedUsr => sendSQSEvent({email: approvedUsr.email, status: approvedUsr.approved}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE))
-        )).catch(error =>console.log(error))
+        )).catch(error =>logger.info(error))
     ;
-    console.log('Cron running every one minute');
+    logger.info('Cron running every one minute');
   });
 
 const getUsers = async (req, res, next) => 

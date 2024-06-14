@@ -35,12 +35,7 @@ const receiveSQSEvent = () =>
                 console.log('Mensaje recibido:', payload);
                 userSchema(payload.data).save()
                     .then(data => console.log('Created user', data.email))
-                return sqs.deleteMessage({
-                    QueueUrl: process.env.AWS_WALLET_SQS_QUEUE,
-                    ReceiptHandle: message.ReceiptHandle
-                })
-                .promise()
-                .then(() => console.log('Mensaje eliminado'));
+                    .catch(err => console.log('Error al crear el usuario:', err))
             })
         }
     })

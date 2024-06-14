@@ -33,10 +33,13 @@ cron.schedule('*/1 * * * *', async () => {
             return await userSchema.findOneAndUpdate({ _id: currentUser._id}, { 
                     ...completeUser
             }, { new: true })
-            .then(updatedUser => sendSQSEvent({email: updatedUser.email, status: updatedUser.status}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE))
             .catch(error =>console.log(error))
         }))
-    );
+    ).then(users => Promise.all(
+        users.filter(usr=> usr.approved != APPROVED_STATUS_PENDING)
+            .map(approvedUsr => sendSQSEvent({email: approvedUsr.email, status: approvedUsr.approved}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE))
+        )).catch(error =>console.log(error))
+    ;
     console.log('Cron running every one minute');
   });
 
@@ -56,6 +59,10 @@ const updateUser = async (req, res, next) =>
          APPROVED_STATUS_REJECTED 
     }, { new: true })
     .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
+    .then(async data => {
+        await sendSQSEvent({email: data.email, status: data.approved}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE);
+        return data;
+    })
     .then(data => res.status(200).send(data))
     .catch(error => res.status(error.status || 500).send({message: error.message}));
 

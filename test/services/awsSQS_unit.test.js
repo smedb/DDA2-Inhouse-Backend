@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const { sendSQSEvent, receiveSQSEvent } = require('../../app/services/awsSQS');;
+const { sendSNSEvent, receiveSQSEvent } = require('../../app/services/awsSQS');;
 const userSchema = require('../../app/models/user');
 
 // Mock the AWS.SQS class
@@ -10,8 +10,14 @@ jest.mock('aws-sdk', () => {
     receiveMessage: jest.fn().mockReturnThis(),
     deleteMessage: jest.fn().mockReturnThis(),
   };
+  const mSNS = {
+    publish: jest.fn().mockReturnThis(),
+    sendMessage: jest.fn().mockReturnThis(),
+    promise: jest.fn()
+  };
   return {
     SQS: jest.fn(() => mSQS),
+    SNS: jest.fn(() => mSNS),
     config: {
       update: jest.fn()
     }
@@ -23,27 +29,28 @@ jest.mock('../../app/models/user', () => jest.fn());
 
 describe('SQS Module Tests', () => {
   const mSQSInstance = new AWS.SQS();
+  const mSNSInstance = new AWS.SNS();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test('sendSQSEvent sends a message to SQS', async () => {
-    mSQSInstance.promise.mockResolvedValueOnce('success');
+    mSNSInstance.promise.mockResolvedValueOnce('success');
 
     const data = { email: 'test@example.com' };
     const message = 'CreateUser';
 
-    await sendSQSEvent(data, message);
+    await sendSNSEvent(data, message);
 
-    expect(mSQSInstance.sendMessage).toHaveBeenCalledWith({
-      MessageBody: JSON.stringify({
+    expect(mSNSInstance.publish).toHaveBeenCalledWith({
+      Message: JSON.stringify({
         operationType: message,
         data
       }),
-      QueueUrl: process.env.AWS_SQS_QUEUE
+      TopicArn: process.env.AWS_SNS_ARN
     });
-    expect(mSQSInstance.promise).toHaveBeenCalled();
+    expect(mSNSInstance.promise).toHaveBeenCalled();
   });
 
   it('receiveSQSEvent receives messages from SQS', async () => {

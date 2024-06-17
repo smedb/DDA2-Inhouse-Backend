@@ -1,7 +1,7 @@
 const userController = require('../../app/controllers/userController');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
 const { parseBiometricStatus } = require('../../app/helpers/rekognitionHelper');
-const { sendSQSEvent } = require('../../app/services/awsSQS');
+const { sendSNSEvent } = require('../../app/services/awsSQS');
 const userSchema = require('../../app/models/user');
 
   jest.mock('../../app/helpers/creditScoreHelper', () => ({
@@ -18,7 +18,7 @@ const userSchema = require('../../app/models/user');
     }));
     
   jest.mock('../../app/services/awsSQS', () => ({
-    sendSQSEvent: jest.fn().mockReturnValue({}),
+    sendSNSEvent: jest.fn().mockReturnValue({}),
   }));
 
 describe('User Controller', () => {
@@ -289,7 +289,7 @@ describe('User Controller', () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn(),
     };
-    sendSQSEvent.mockImplementationOnce(() => Promise.resolve());
+    sendSNSEvent.mockImplementationOnce(() => Promise.resolve());
     const saveMock = jest.fn().mockResolvedValue(createdUser);
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
 

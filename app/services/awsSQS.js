@@ -37,7 +37,7 @@ const receiveSQSEvent = () =>
             logger.info('No hay mensajes en la cola');
         } else {
             return await Promise.all(data.Messages.map(async message => {
-                const payload = JSON.parse(message?.Body);
+                const payload = JSON.parse(JSON.parse(message?.Body).Message);
                 if( payload.operationType == 'CreateUser' ) {
                     logger.info(`Mensaje recibido: ${JSON.stringify(payload)}`);
                     await userSchema(payload.data).save()

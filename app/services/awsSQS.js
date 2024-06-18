@@ -38,7 +38,7 @@ const receiveSQSEvent = () =>
         } else {
             return await Promise.all(data.Messages.map(async message => {
                 const payload = JSON.parse(message?.Body);
-                if( payload == 'CreateUser' ) {
+                if( payload.operationType == 'CreateUser' ) {
                     logger.info(`Mensaje recibido: ${JSON.stringify(payload)}`);
                     await userSchema(payload.data).save()
                         .then(data => logger.info('Created user', data.email))

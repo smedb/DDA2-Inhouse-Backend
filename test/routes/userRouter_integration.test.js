@@ -3,7 +3,7 @@ const app = require('../../app');
 const userSchema = require('../../app/models/user');
 const { predictCreditScore } = require('../../app/helpers/creditScoreHelper');
 const { parseBiometricStatus } = require('../../app/helpers/rekognitionHelper');
-const { sendSQSEvent } = require('../../app/services/awsSQS');
+const { sendSNSEvent } = require('../../app/services/awsSQS');
 
 
 jest.mock('../../app/helpers/creditScoreHelper', () => ({
@@ -20,7 +20,7 @@ jest.mock('../../app/helpers/rekognitionHelper', () => ({
   }));
 
 jest.mock('../../app/services/awsSQS', () => ({
-  sendSQSEvent: jest.fn().mockReturnValue({}),
+  sendSNSEvent: jest.fn().mockReturnValue({}),
 }));
 describe('Integration test /users POST', () => {
 
@@ -1014,7 +1014,7 @@ describe('Validations', () => {
       birthDate: '1980/05/11'
     };
     const saveMock = jest.fn().mockResolvedValue(createdUser);
-    sendSQSEvent.mockImplementationOnce(() => Promise.resolve());
+    sendSNSEvent.mockImplementationOnce(() => Promise.resolve());
     jest.spyOn(userSchema.prototype, 'save').mockImplementation(saveMock);
     return await request(app)
       .post('/users/employee')

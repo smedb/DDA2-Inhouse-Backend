@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const cron = require('node-cron');
 const userSchema = require('../models/user');
 const {
-    CREDIT_SCORE_VALIDATION, 
-    APPROVED_STATUS_PENDING, 
+    CREDIT_SCORE_VALIDATION,
+    APPROVED_STATUS_PENDING,
     CREDIT_SCORE_VALIDATION_FRAUD,
     APPROVED_STATUS_APPROVED,
     APPROVED_STATUS_REJECTED,
@@ -15,7 +15,7 @@ const {
     AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE,
     AWS_DELETE_USER_EMPLOYEE_SQS_MESSAGE
 } = require('../helpers/constants');
-const { userBuilderOrchestrator, userInfoUpdate } = require('../helpers/userHelper');
+const { userInfoUpdate } = require('../helpers/userHelper');
 const { sendSNSEvent } = require('../services/awsSQS');
 
 const create = async (req, res, next) =>
@@ -26,32 +26,32 @@ const create = async (req, res, next) =>
 cron.schedule('*/1 * * * *', async () => {
     await userInfoUpdate();
     logger.info('Cron running every one minute');
-  });
+});
 
-const getUsers = async (req, res, next) => 
-    userSchema.find({ 
+const getUsers = async (req, res, next) =>
+    userSchema.find({
         approved: APPROVED_STATUS_PENDING,
         fraudSituation: CREDIT_SCORE_VALIDATION.filter(v => v != CREDIT_SCORE_VALIDATION_FRAUD),
         segment: USER_SEGMENT_CLIENT
     })
-    .then(data => res.status(200).send(data))
-    .catch(error => res.status(500).send({message: error.message}));
+        .then(data => res.status(200).send(data))
+        .catch(error => res.status(500).send({message: error.message}));
 
-const updateUser = async (req, res, next) => 
+const updateUser = async (req, res, next) =>
     userSchema.findOneAndUpdate({ _id: req.params.userId, approved: APPROVED_STATUS_PENDING}, { 
         approved: req.body.approved ?
-         APPROVED_STATUS_APPROVED : 
-         APPROVED_STATUS_REJECTED 
+            APPROVED_STATUS_APPROVED :
+            APPROVED_STATUS_REJECTED
     }, { new: true })
-    .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
-    .then(async data => {
-        await sendSNSEvent({email: data.email, status: data.approved}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE);
-        return data;
-    })
-    .then(data => res.status(200).send(data))
+        .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
+        .then(async data => {
+            await sendSNSEvent({email: data.email, status: data.approved}, AWS_CREATE_USER_CLIENT_SQS_MESSAGE);
+            return data;
+        })
+        .then(data => res.status(200).send(data))
     .catch(error => res.status(error.status || 500).send({message: error.message}));
 
-const createEmployee = async (req, res, next) =>  
+const createEmployee = async (req, res, next) =>
     Promise.all(req.body.users.map(async currentUser => {
         const user = userSchema({
             ...currentUser,
@@ -61,15 +61,26 @@ const createEmployee = async (req, res, next) =>
         });
         return user.save();
     }))
-    .then(users => Promise.all(users.map(async usr => {
-        await sendSNSEvent({email: usr.email}, AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE);
-        return usr;
-    })))
+        .then(users => Promise.all(users.map(async usr => {
+            await sendSNSEvent(
+                { 
+                    email: usr.email, 
+                    firstName: usr.firstName ?? 'Not specified',
+                    lastName: usr.lastName ?? 'Not specified',
+                    gender: usr.gender ?? 'Not specified', 
+                    birthDate: usr.birthDate ?? new Date(), 
+                    monthlySalary: usr.monthlySalary ?? 0,
+                    department: usr.department ?? 'Not specified'
+                }, 
+                AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE
+            );
+            return usr;
+        })))
     .then(users => res.status(201).send(users.map(usr => ({email: usr.email}))))
     .catch(error => res.status(500).send({message: error.message}));
 
 
-const loginEmployee = async (req, res, next) => 
+const loginEmployee = async (req, res, next) =>
     userSchema.findOne({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE })
         .then(data => {
             if(!data) {
@@ -82,27 +93,27 @@ const loginEmployee = async (req, res, next) =>
                     if (!passwordMatch && process.env.NODE_ENV != 'test') {
                         return res.status(401).json({ message: 'Invalid login credentials.' });
                     }
-                    const token = process.env.NODE_ENV == 'test' ? 
-                        'mockToken' : 
+                    const token = process.env.NODE_ENV == 'test' ?
+                        'mockToken' :
                         jwt.sign(
-                            { email, password: hashedPassword }, 
-                            process.env.TOKEN_SECRET, 
+                            { email, password: hashedPassword },
+                            process.env.TOKEN_SECRET,
                             { expiresIn: '1h' }
-                    );
+                        );
                     return res.status(200).send({email: data.email, token, department: data.department })
                 });
         })
         .catch(error => res.status(500).send({message: error.message}));
 
-const getEmployees = async (req, res, next) => 
-    userSchema.find({ 
+const getEmployees = async (req, res, next) =>
+    userSchema.find({
         segment: USER_SEGMENT_EMPLOYEE
     },
-    { password: 0, approved: 0, segment: 0, verified: 0 })
-    .then(data => res.status(200).send(data))
+        { password: 0, approved: 0, segment: 0, verified: 0 })
+        .then(data => res.status(200).send(data))
     .catch(error => res.status(500).send({message: error.message}));
 
-const deleteUser = async (req, res, next) => 
+const deleteUser = async (req, res, next) =>
     userSchema.findOneAndDelete({ email: req.body.email.toString(), segment: USER_SEGMENT_EMPLOYEE})
         .then(data => data == null ? Promise.reject({message: 'User not found', status: 404}) : data)
         .then(async data => {
@@ -112,12 +123,12 @@ const deleteUser = async (req, res, next) =>
         .then(data => res.status(200).send({email: data.email}))
         .catch(error => res.status(error.status || 500).send({message: error.message}));
 
-module.exports = { 
-    create, 
-    getUsers, 
-    updateUser, 
-    createEmployee, 
-    loginEmployee, 
+module.exports = {
+    create,
+    getUsers,
+    updateUser,
+    createEmployee,
+    loginEmployee,
     getEmployees,
     deleteUser
- }
+}

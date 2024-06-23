@@ -65,12 +65,12 @@ const createEmployee = async (req, res, next) =>
             await sendSNSEvent(
                 { 
                     email: usr.email, 
-                    firstName: usr.firstName ?? 'Not specified',
-                    lastName: usr.lastName ?? 'Not specified',
-                    gender: usr.gender ?? 'Not specified', 
-                    birthDate: usr.birthDate ?? new Date(), 
-                    monthlySalary: usr.monthlySalary ?? 0,
-                    department: usr.department ?? 'Not specified'
+                    firstName: usr.firstName,
+                    lastName: usr.lastName,
+                    gender: usr.gender, 
+                    birthDate: usr.birthDate, 
+                    monthlySalary: usr.monthlySalary,
+                    department: usr.department
                 }, 
                 AWS_CREATE_USER_EMPLOYEE_SQS_MESSAGE
             );

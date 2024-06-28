@@ -17,6 +17,7 @@ const {
 } = require('../helpers/constants');
 const { userInfoUpdate } = require('../helpers/userHelper');
 const { sendSNSEvent } = require('../services/awsSQS');
+const seed = require('../seed/seed');
 
 const create = async (req, res, next) =>
     userSchema(req.body).save()
@@ -27,6 +28,8 @@ cron.schedule('*/1 * * * *', async () => {
     await userInfoUpdate();
     logger.info('Cron running every one minute');
 });
+
+seed();
 
 const getUsers = async (req, res, next) =>
     userSchema.find({
